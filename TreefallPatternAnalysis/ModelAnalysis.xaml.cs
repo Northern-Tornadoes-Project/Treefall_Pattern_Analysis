@@ -28,14 +28,26 @@ namespace TreefallPatternAnalysis
         public ModelAnalysis()
         {
             InitializeComponent();
+
             RenderGraph();
+
+            //graphPlot.Plot.GetSettings().ZoomRectangle.Clear();
+            var x = graphPlot.Plot.GetSettings();
+
+            x.AxisAutoUnsetAxes();
+            x.AxisAutoAll();
         }
+
+        private ScottPlot.Plottable.Ellipse rmaxCircle;
+        private ScottPlot.Plottable.ScatterPlot innerSolutionPoly;
+        private ScottPlot.Plottable.ScatterPlot outerSolutionPoly;
 
         public void RenderGraph()
         {
             if (graphPlot == null) return;
 
             Plot plt = graphPlot.Plot;
+            var al = plt.GetAxisLimits();
             plt.Clear();
 
             PixelPadding padding = new PixelPadding(150f, 150f, 29f, 30f);
@@ -47,7 +59,7 @@ namespace TreefallPatternAnalysis
             plt.XAxis.SetBoundary(-1000.0, 1000.0);
 
             double dx = dxSlider.Value;
-            int magDx = 25;
+            int magDx = 20;
 
             double[,] magnitudes = new double[2000 / magDx, 2000 / magDx];
             Vector2[,] unitVecs = new Vector2[(int)Math.Ceiling(2000.0 / dx), (int)Math.Ceiling(2000.0 / dx)];
@@ -85,11 +97,38 @@ namespace TreefallPatternAnalysis
             colorbar.MaxValue = 120.0;
             colorbar.Label = "Max Wind Velocity (m/s)";
 
+            if ((bool)displayRmax.IsChecked)
+            {
+                rmaxCircle = plt.AddCircle(0, 0, rmaxSlider.Value, System.Drawing.Color.Black, 4);
+            }
+            else
+            {
+                plt.Remove(rmaxCircle);
+            }
+            if ((bool)displaySolutionCurve.IsChecked)
+            {
+                var (oxs, oys) = PolarRankine(vrSlider.Value, vtSlider.Value, vsSlider.Value, vcSlider.Value, rmaxSlider.Value, phiSlider.Value, true);
+
+                outerSolutionPoly = plt.AddScatter(oxs, oys, System.Drawing.Color.White, 4, 1);
+
+                var (ixs, iys) = PolarRankine(vrSlider.Value, vtSlider.Value, vsSlider.Value, vcSlider.Value, rmaxSlider.Value, phiSlider.Value, false);
+
+                innerSolutionPoly = plt.AddScatter(ixs, iys, System.Drawing.Color.White, 4, 1);
+            }
+            else
+            {
+                plt.Remove(innerSolutionPoly);
+                plt.Remove(outerSolutionPoly);
+            }
+
             double scaleFactor = dx;
 
-            plt.AddVectorField(unitVecs, xPositions, yPositions, null, System.Drawing.Color.Black, null, scaleFactor).ScaledArrowheads = true;
+            var vf = plt.AddVectorField(unitVecs, xPositions, yPositions, null, System.Drawing.Color.Black, null, scaleFactor);
+            vf.ScaledArrowheads = true;
+            vf.ScaledArrowheadLength = 0.4;
 
-            plt.SetAxisLimits(-1000.0, 1000.0, -1000.0, 1000.0);
+            //plt.SetAxisLimits(-1000.0, 1000.0, -1000.0, 1000.0);
+            plt.SetAxisLimits(al);
             graphPlot.Refresh();
         }
 
@@ -129,7 +168,72 @@ namespace TreefallPatternAnalysis
             return new double[3] { vec[0] / mag, vec[1] / mag, mag };
         }
 
+        public (double[], double[]) PolarRankine(double a, double t, double s, double c, double R, double p, bool outer)
+        {
+            int n = 500;
+            List<double> xs = new List<double>();
+            List<double> ys = new List<double>();
+            List<double> tempxs = new List<double>();
+            List<double> tempys = new List<double>();
+            bool outOfBounds = false;
+
+            double sqrt2 = Math.Sqrt(2);
+            double a2 = a * a;
+            double t2 = t * t;
+            double s2 = s * s;
+            double c2 = c * c;
+            double a2t2 = a2 + t2;
+            double d = outer ? 1 / (c2 - s2) : 1 / a2t2;
+
+            double k1 = Math.Pow(2, -1 / p) * R;
+            double k2 = outer ? 2 * s * t : -2 * s * t;
+            double k3 = outer ? -2 * s * a : 2 * s * a;
+            double k4 = (2 * c2 - s2) * a2t2;
+            double k5 = -s2 * (a2 - t2);
+            double k6 = -2 * a * s2 * t;
+
+
+            for (int i = 0; i < n; i++)
+            {
+                double sin = Math.Sin((i * 2 * Math.PI) / n);
+                double cos = Math.Cos((i * 2 * Math.PI) / n);
+                double sin2 = 2 * sin * cos;
+                double cos2 = cos * cos - sin * sin;
+
+                double r = k1 * Math.Pow((k2 * cos + k3 * sin + sqrt2 * Math.Sqrt(k4 + k5 * cos2 + k6 * sin2)) * d, 1 / p);
+
+                if((!outer && r <= R) || (outer && r > R))
+                {
+                    outOfBounds = false;
+                    xs.Add(r * cos);
+                    ys.Add(r * sin);
+                }
+                else if (outOfBounds == false)
+                {
+                    outOfBounds = true;
+                    tempxs.AddRange(xs);
+                    tempys.AddRange(ys);
+                    xs.Clear();
+                    ys.Clear();
+                }
+                
+            }
+
+            xs.AddRange(tempxs); 
+            ys.AddRange(tempys);
+
+            //xs.Add(xs[0]);
+            //ys.Add(ys[0]);
+
+            return (xs.ToArray(), ys.ToArray());
+        }
+
         private void paramSliderChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            RenderGraph();
+        }
+
+        private void displayChecked(object sender, RoutedEventArgs e)
         {
             RenderGraph();
         }

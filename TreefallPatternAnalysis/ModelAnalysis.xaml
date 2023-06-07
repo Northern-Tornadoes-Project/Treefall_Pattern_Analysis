@@ -113,10 +113,10 @@
                                 <!--Unknown connection ID: 7-->
                             </Slider>
                             <Label Content="{Binding ElementName=dxSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
-                            <CheckBox Style="{DynamicResource Esri_CheckboxToggleSwitch}" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Height="36" Width="234">
+                            <CheckBox x:Name="displayRmax" Style="{DynamicResource Esri_CheckboxToggleSwitch}" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Height="36" Width="234" Checked="displayChecked" Unchecked="displayChecked">
                                 <Label Content="Display Rmax Radius   "/>
                             </CheckBox>
-                            <CheckBox Style="{DynamicResource Esri_CheckboxToggleSwitch}" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Height="36" Width="234">
+                            <CheckBox x:Name="displaySolutionCurve" Style="{DynamicResource Esri_CheckboxToggleSwitch}" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Height="36" Width="234" Checked="displayChecked" Unchecked="displayChecked">
                                 <Label Content="Display Solution Curve"/>
                             </CheckBox>
                         </StackPanel>
