@@ -23,56 +23,104 @@
                     <Grid Background="#FFE5E5E5">
                         <StackPanel HorizontalAlignment="Center" Height="676" VerticalAlignment="Center" Width="260">
                             <Label Height="28" Content="Phi (exponential scaling factor)" Width="200" Margin="0, 20, 0, 0" />
-                            <Slider Name="phiSlider" HorizontalAlignment="Center" Height="22" Width="250" Minimum="0.5" Maximum="1.5" TickFrequency="0.05" SmallChange="0.05" LargeChange="0.1" Value="1" ValueChanged="paramSliderChanged">
+                            <Slider Name="phiSlider" AutoToolTipPlacement="BottomRight" TickPlacement="None" AutoToolTipPrecision="2" HorizontalAlignment="Center" Height="22" Width="83" Minimum="0.5" Maximum="1.5" TickFrequency="0.05" IsSnapToTickEnabled="True" SmallChange="0.05" LargeChange="0.1" Value="1" ValueChanged="paramSliderChanged" RenderTransformOrigin="0.5,0.5">
+                                <Slider.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="3"/>
+                                        <SkewTransform/>
+                                        <RotateTransform/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </Slider.RenderTransform>
                                 <!--Unknown connection ID: 1-->
                             </Slider>
-                            <Label Height="28" Content="Vr (Max Radial Wind Velocity)" Width="200" Margin="0, 20, 0, 0" />
-                            <Slider Name="vrSlider" HorizontalAlignment="Center" Height="22" Width="250" Maximum="80" Minimum="20" LargeChange="5" SmallChange="1" TickFrequency="5" Value="70" ValueChanged="paramSliderChanged">
+                            <Label Content="{Binding ElementName=phiSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
+                            <Label Height="28" Content="Vr (Max Radial Wind Velocity)" Width="200" Margin="0, 0, 0, 0" />
+                            <Slider Name="vrSlider" HorizontalAlignment="Center" TickPlacement="None" Height="22" Width="83" Maximum="80" Minimum="20" LargeChange="5" SmallChange="1" Value="70" ValueChanged="paramSliderChanged" IsSnapToTickEnabled="True" RenderTransformOrigin="0.5,0.5">
+                                <Slider.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="3"/>
+                                        <SkewTransform/>
+                                        <RotateTransform/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </Slider.RenderTransform>
                                 <!--Unknown connection ID: 2-->
                             </Slider>
-                            <Label Height="28" Content="Vt (Max Tangential Wind Velocity)" Width="200" Margin="0, 20, 0, 0" />
-                            <Slider Name="vtSlider" HorizontalAlignment="Center" Height="22" Width="250" LargeChange="5" Maximum="50" Minimum="1" SmallChange="1" TickFrequency="5" Value="40" ValueChanged="paramSliderChanged">
+                            <Label Content="{Binding ElementName=vrSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
+                            <Label Height="28" Content="Vt (Max Tangential Wind Velocity)" Width="200" Margin="0, 0, 0, 0" />
+                            <Slider Name="vtSlider" HorizontalAlignment="Center" TickPlacement="None" Height="22" Width="83" LargeChange="5" Maximum="50" Minimum="1" SmallChange="1" TickFrequency="1" Value="40" ValueChanged="paramSliderChanged" IsSnapToTickEnabled="True" RenderTransformOrigin="0.5,0.5">
+                                <Slider.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="3"/>
+                                        <SkewTransform/>
+                                        <RotateTransform/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </Slider.RenderTransform>
                                 <!--Unknown connection ID: 3-->
                             </Slider>
-                            <Label Height="28" Content="Vs (Displacement Velocity)" Width="200" Margin="0, 20, 0, 0" />
-                            <Slider Name="vsSlider" HorizontalAlignment="Center" Height="22" Width="250" LargeChange="5" Maximum="30" Minimum="1" SmallChange="1" TickFrequency="5" Value="23" ValueChanged="paramSliderChanged">
+                            <Label Content="{Binding ElementName=vtSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
+                            <Label Height="28" Content="Vs (Displacement Velocity)" Width="200" Margin="0, 0, 0, 0" />
+                            <Slider Name="vsSlider" HorizontalAlignment="Center" TickPlacement="None" Height="22" Width="83" LargeChange="5" Maximum="30" Minimum="1" SmallChange="1" TickFrequency="1" Value="23" ValueChanged="paramSliderChanged" IsSnapToTickEnabled="True" RenderTransformOrigin="0.5,0.5">
+                                <Slider.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="3"/>
+                                        <SkewTransform/>
+                                        <RotateTransform/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </Slider.RenderTransform>
                                 <!--Unknown connection ID: 4-->
                             </Slider>
-                            <Label Height="28" Content="Vc (Tree Failure Velocity)" Width="200" Margin="0, 20, 0, 0" />
-                            <Slider Name="vcSlider" HorizontalAlignment="Center" Height="22" Width="250" LargeChange="5" Maximum="65" Minimum="35" SmallChange="1" TickFrequency="5" Value="40" ValueChanged="paramSliderChanged">
+                            <Label Content="{Binding ElementName=vsSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
+                            <Label Height="28" Content="Vc (Tree Failure Velocity)" Width="200" Margin="0, 0, 0, 0" />
+                            <Slider Name="vcSlider" HorizontalAlignment="Center" TickPlacement="None" Height="22" Width="83" LargeChange="5" Maximum="65" Minimum="35" SmallChange="1" TickFrequency="1" Value="40" ValueChanged="paramSliderChanged" IsSnapToTickEnabled="True" RenderTransformOrigin="0.5,0.5">
+                                <Slider.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="3"/>
+                                        <SkewTransform/>
+                                        <RotateTransform/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </Slider.RenderTransform>
                                 <!--Unknown connection ID: 5-->
                             </Slider>
-                            <Label Height="28" Content="Rmax (Radius of Maximum Velocity)" Width="200" Margin="0, 20, 0, 0" />
-                            <Slider Name="rmaxSlider" HorizontalAlignment="Center" Height="22" Width="250" LargeChange="20" Maximum="500" Minimum="10" SmallChange="5" TickFrequency="20" Value="200" ValueChanged="paramSliderChanged">
+                            <Label Content="{Binding ElementName=vcSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
+                            <Label Height="28" Content="Rmax (Radius of Maximum Velocity)" Width="200" Margin="0, 0, 0, 0" />
+                            <Slider Name="rmaxSlider" HorizontalAlignment="Center" TickPlacement="None" Height="22" Width="83" LargeChange="20" Maximum="500" Minimum="10" SmallChange="5" TickFrequency="5" Value="200" ValueChanged="paramSliderChanged" IsSnapToTickEnabled="True" RenderTransformOrigin="0.5,0.5">
+                                <Slider.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="3"/>
+                                        <SkewTransform/>
+                                        <RotateTransform/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </Slider.RenderTransform>
                                 <!--Unknown connection ID: 6-->
                             </Slider>
-                            <Label Height="28" Content="DX (grid/vector spacing)" Width="200" Margin="0, 20, 0, 0" />
-                            <Slider Name="dxSlider" HorizontalAlignment="Center" Height="22" Width="250" LargeChange="5" Maximum="200" Minimum="5" SmallChange="1" TickFrequency="5" Value="80" ValueChanged="paramSliderChanged">
+                            <Label Content="{Binding ElementName=rmaxSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
+                            <Label Height="28" Content="DX (grid/vector spacing)" Width="200" Margin="0, 0, 0, 0" />
+                            <Slider Name="dxSlider" HorizontalAlignment="Center" TickPlacement="None" Height="22" Width="83" LargeChange="5" Maximum="200" Minimum="5" SmallChange="1" TickFrequency="5" Value="80" ValueChanged="paramSliderChanged" IsSnapToTickEnabled="True" RenderTransformOrigin="0.5,0.5">
+                                <Slider.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="3"/>
+                                        <SkewTransform/>
+                                        <RotateTransform/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </Slider.RenderTransform>
                                 <!--Unknown connection ID: 7-->
                             </Slider>
+                            <Label Content="{Binding ElementName=dxSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
+                            <CheckBox Style="{DynamicResource Esri_CheckboxToggleSwitch}" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Height="36" Width="234">
+                                <Label Content="Display Rmax Radius   "/>
+                            </CheckBox>
+                            <CheckBox Style="{DynamicResource Esri_CheckboxToggleSwitch}" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Height="36" Width="234">
+                                <Label Content="Display Solution Curve"/>
+                            </CheckBox>
                         </StackPanel>
-                        <CheckBox FlowDirection="RightToLeft" HorizontalAlignment="Left" Margin="-24,510,0,0" VerticalAlignment="Top" Height="18" Width="130" RenderTransformOrigin="0.5,0.5">
-                            <UIElement.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform ScaleX="2" ScaleY="2" />
-                                    <SkewTransform />
-                                    <RotateTransform />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </UIElement.RenderTransform>
-                            <Label Content="Display Rmax Radius" Margin="5,0,0,0" FontSize="6" />
-                        </CheckBox>
-                        <CheckBox FlowDirection="RightToLeft" HorizontalAlignment="Left" Margin="-24,550,0,0" VerticalAlignment="Top" Height="18" Width="130" RenderTransformOrigin="0.5,0.5">
-                            <UIElement.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform ScaleX="2" ScaleY="2" />
-                                    <SkewTransform />
-                                    <RotateTransform />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </UIElement.RenderTransform>
-                            <Label Content="Display Solution Curve" HorizontalAlignment="Center" FontSize="6" />
-                        </CheckBox>
+                        
                     </Grid>
                 </TabItem>
                 <TabItem Header="Vortex Models">
