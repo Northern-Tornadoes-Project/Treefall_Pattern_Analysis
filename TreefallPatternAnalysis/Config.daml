@@ -1,0 +1,45 @@
+﻿<ArcGIS defaultAssembly="TreefallPatternAnalysis.dll" defaultNamespace="TreefallPatternAnalysis" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+  <AddInInfo id="{ed384122-b6e4-4349-987d-d86dcdcdfd1f}" version="1.0" desktopVersion="3.1.41833">
+    <Name>TreefallPatternAnalysis</Name>
+    <Description>TreefallPatternAnalysis description</Description>
+    <Image>Images\AddinDesktop32.png</Image>
+    <Author>Daniel Butt</Author>
+    <Company>NTP</Company>
+    <Date>4/18/2023 5:31:41 PM</Date>
+    <Subject>Framework</Subject>
+    <!-- Note subject can be one or more of these topics:
+                    Content, Framework, Editing, Geodatabase, Geometry, Geoprocessing, Layouts, Map Authoring, Map Exploration -->
+  </AddInInfo>
+  <modules>
+    <insertModule id="TreefallPatternAnalysis_Module" className="Module1" autoLoad="false" caption="Module1">
+      <!-- uncomment to have the control hosted on a separate tab-->
+      <tabs>
+        <tab id="TreefallPatternAnalysis_Tab" caption="Pattern Analysis">
+          <group refID="TreefallPatternAnalysis_Group" />
+        </tab>
+      </tabs>
+      <groups>
+        <!-- comment this out if you have no controls on the Addin tab to avoid
+              an empty group-->
+        <group id="TreefallPatternAnalysis_Group" caption="Main Group" appearsOnAddInTab="false">
+          <button refID="transectAnalysis" size="large" />
+          <button refID="TreefallPatternAnalysis_MainPage" size="large" />
+          <button refID="TreefallPatternAnalysis_ModelAnalysis" size="large" />
+          <button refID="TreefallPatternAnalysis_ModelAnalysis" size="large" />
+        </group>
+      </groups>
+      <controls>
+        <!-- add your controls here -->
+        <button id="TreefallPatternAnalysis_MainPage" caption="Transect Analysis" className="ShowMainPage" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
+          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+        </button>
+        <button id="TreefallPatternAnalysis_ModelAnalysis" caption="Vortex Model Analysis" className="ShowModelAnalysis" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
+          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+        </button>
+        <button id="TreefallPatternAnalysis_ModelAnalysis" caption="ModelAnalysis" className="ShowModelAnalysis" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
+          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+        </button>
+      </controls>
+    </insertModule>
+  </modules>
+</ArcGIS>
