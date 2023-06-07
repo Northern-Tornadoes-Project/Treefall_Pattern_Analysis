@@ -25,7 +25,6 @@
           <button refID="transectAnalysis" size="large" />
           <button refID="TreefallPatternAnalysis_MainPage" size="large" />
           <button refID="TreefallPatternAnalysis_ModelAnalysis" size="large" />
-          <button refID="TreefallPatternAnalysis_ModelAnalysis" size="large" />
         </group>
       </groups>
       <controls>
@@ -34,9 +33,6 @@
           <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
         </button>
         <button id="TreefallPatternAnalysis_ModelAnalysis" caption="Vortex Model Analysis" className="ShowModelAnalysis" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
-          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
-        </button>
-        <button id="TreefallPatternAnalysis_ModelAnalysis" caption="ModelAnalysis" className="ShowModelAnalysis" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
           <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
         </button>
       </controls>
