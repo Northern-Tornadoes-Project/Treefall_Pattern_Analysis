@@ -132,6 +132,59 @@ namespace TreefallPatternAnalysis
             graphPlot.Refresh();
         }
 
+        List<ModelProfile> profilePlots = new();
+
+        public void RenderProfiles()
+        {
+            var plt = profilePlot.Plot;
+
+            plt.Clear();
+
+            int idx = graphedProfilesListBox.SelectedIndex;
+
+            if (idx > -1)
+            {
+
+                ModelProfile selectedProfile = profilePlots[idx];
+
+                double[] args = generateProfileArgs(selectedProfile.profileType);
+
+                selectedProfile.setPlotArgs(args);
+            }
+
+            foreach(var p in profilePlots)
+            {
+                p.addFuncPlot(plt);
+            }
+
+            
+            plt.SetAxisLimits(-0.25, 10.0, -5.0, 100.0);
+            plt.Title("Profiles");
+            plt.XLabel("r/Rmax");
+            plt.YLabel("Wind Velocity (m/s)");
+            plt.Legend(location: Alignment.UpperRight);
+            profilePlot.Refresh();
+
+        }
+
+        public double[] generateProfileArgs(string profileType)
+        {
+            double[] args;
+
+
+            System.Diagnostics.Debug.WriteLine("************" + profileType + "*****************");
+
+            args = profileType.ToLower() switch
+            {
+                "vr" => new double[] { vrSlider.Value , phiSlider.Value},
+                "vt" => new double[] { vtSlider.Value, phiSlider.Value },
+                "vs" => new double[] { vsSlider.Value },
+                "vc" => new double[] { vcSlider.Value }
+            };
+
+            return args;
+        }
+
         public double hypot(double x, double y)
         {
             return Math.Sqrt(x * x + y * y);
@@ -230,12 +283,87 @@ namespace TreefallPatternAnalysis
 
         private void paramSliderChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            RenderGraph();
+            if (utilityTab == null || utilityTab.SelectedItem == null) return;
+
+            String selectedTabHeader = (string)((TabItem)utilityTab.SelectedItem).Header;
+
+            switch (selectedTabHeader)
+            {
+                case "Model Grapher":
+                    RenderGraph();
+                    break;
+
+                case "Pattern Solver":
+                    break;
+
+                case "Simulator":
+                    break;
+
+                case "Model Profiles":
+                    RenderProfiles();
+                    break;
+            }
+            
+            
         }
 
         private void displayChecked(object sender, RoutedEventArgs e)
         {
-            RenderGraph();
+            if (utilityTab == null || utilityTab.SelectedItem == null) return;
+
+            String selectedTabHeader = (string)((TabItem)utilityTab.SelectedItem).Header;
+
+            switch (selectedTabHeader)
+            {
+                case "Model Grapher":
+                    RenderGraph();
+                    break;
+
+                case "Pattern Solver":
+                    break;
+
+                case "Simulator":
+                    break;
+
+                case "Model Profiles":
+                    break;
+            }
+        }
+
+        private void addNewProfile(object sender, RoutedEventArgs e)
+        {
+            if (profileModelSelection.SelectedItem == null ||
+                profileTypeSelection.SelectedItem  == null ||
+                profileStyleSelection.SelectedItem == null)   return;
+
+            string modelType = ((ComboBoxItem)profileModelSelection.SelectedItem).Content.ToString();
+            string profileType = ((ComboBoxItem)profileTypeSelection.SelectedItem).Content.ToString();
+            string profileStyle = ((ComboBoxItem)profileStyleSelection.SelectedItem).Content.ToString();
+            //double[] args = generateProfileArgs(profileType);
+
+            graphedProfilesListBox.Items.Add(modelType + " - " + profileType);
+
+            profilePlots.Add(new ModelProfile(modelType, profileType, profileStyle, null));
+
+            graphedProfilesListBox.SelectedIndex = graphedProfilesListBox.Items.Count - 1;
+
+            RenderProfiles();
+
+        }
+
+        private void deleteSelectedProfile(object sender, RoutedEventArgs e)
+        {
+            int idx = graphedProfilesListBox.SelectedIndex;
+
+            if (idx == -1) return;
+
+            profilePlot.Plot.Remove(profilePlots[idx].plot);
+
+            profilePlots.RemoveAt(idx);
+
+            graphedProfilesListBox.Items.RemoveAt(idx);
+
+            profilePlot.Refresh();
         }
     }
 }

@@ -11,26 +11,26 @@ namespace TreefallPatternAnalysis
     public static class PatternSolver
     {
 
-        [DllImport("F:\\PatternSolver\\x64\\Release\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static unsafe extern float** matchPattern(float* p, float[] modelparams, float spacing, float wAbove, float wBelow);
-        [DllImport("F:\\PatternSolver\\x64\\Release\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static unsafe extern float** generatePattern(float* p, float spacing);
-        [DllImport("F:\\PatternSolver\\x64\\Release\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static unsafe extern float getConvergenceRankine(float* p);
+        [DllImport("D:\\PatternSolver\\x64\\Release\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static unsafe extern double** matchPattern(double* p, double[] modelParams, int modelType, int compareType, int weightType, double dx, double wAbove, double wBelow);
+        [DllImport("D:\\PatternSolver\\x64\\Release\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static unsafe extern double** generatePattern(double[] modelParams, int modelType, double dx);
+        /*[DllImport("F:\\PatternSolver\\x64\\Release\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static unsafe extern double getConvergenceRankine(double* p);*/
 
-        public static unsafe List<float[]> solveBestMatches(List<float> p, float[] modelParams, float spacing, float wAbove, float wBelow)
+        public static unsafe List<double[]> solveBestMatches(List<double> p, double[] modelParams, int modelType, int compareType, int weightType, double dx, double wAbove, double wBelow)
         {
-            float[] rp = reverseAndRotateCCW(p).ToArray();
+            double[] rp = reverseAndRotateCCW(p).ToArray();
 
-            List<float[]> matches;
+            List<double[]> matches;
 
             unsafe
             {
-                fixed (float* rp_ptr = rp)
+                fixed (double* rp_ptr = rp)
                 {
-                    float** matches_ptr = matchPattern(rp_ptr, modelParams, spacing, wAbove, wBelow);
+                    double** matches_ptr = matchPattern(rp_ptr, modelParams, modelType, compareType, weightType, dx, wAbove, wBelow);
 
-                    matches = parseNanTerminatedFloatArray(matches_ptr, 7);
+                    matches = parseNanTerminatedDoubleArray(matches_ptr, 8);
 
                 }
             }
@@ -38,44 +38,41 @@ namespace TreefallPatternAnalysis
             return matches;
         }
 
-        public static unsafe List<float[]> getPattern(float[] p, float spacing)
+        public static unsafe List<double[]> getPattern(double[] modelParams, int modelType, double dx)
         {
-            List<float[]> pattern;
+            List<double[]> pattern;
 
             unsafe
             {
-                fixed (float* p_ptr = p)
+                double** pattern_ptr = generatePattern(modelParams, modelType, dx);
+
+                pattern = parseNanTerminatedDoubleArray(pattern_ptr, 4);
+
+                //get axis of convergence
+                double c = pattern[pattern.Count - 1][0];
+                pattern.RemoveAt(pattern.Count - 1);
+
+                pattern = reverseAndRotateCW(pattern);
+
+                for(int i = 0; i < pattern.Count(); i++)
                 {
-                    float** pattern_ptr = generatePattern(p_ptr, spacing);
-
-                    pattern = parseNanTerminatedFloatArray(pattern_ptr, 4);
-
-                    pattern = reverseAndRotateCW(pattern);
-
-                    float c = getConvergence(p);
-
-                    for(int i = 0; i < pattern.Count(); i++)
-                    {
-                        pattern[i][1] += c;
-                    }
+                    pattern[i][1] += c;
                 }
             }
-
-            
 
             return pattern;
         }
 
-        public static unsafe List<float[]> getPattern(float[] p, float spacing, float[] centerVec)
+        public static unsafe List<double[]> getPattern(double[] modelParams, int modelType, double dx, double[] centerVec)
         {
-            List<float[]> pattern = getPattern(p, spacing);
+            List<double[]> pattern = getPattern(modelParams, modelType, dx);
 
             for(int i = 1; i < pattern.Count; i++)
             {
-                if (Math.Abs(pattern[i][1] - pattern[i - 1][1]) > 1.0f) continue;
+                if (Math.Abs(pattern[i][1] - pattern[i - 1][1]) > 1.0) continue;
 
-                float d1 = pattern[i][2] * centerVec[0] + pattern[i][3] * centerVec[1];
-                float d2 = pattern[i-1][2] * centerVec[0] + pattern[i-1][3] * centerVec[1];
+                double d1 = pattern[i][2] * centerVec[0] + pattern[i][3] * centerVec[1];
+                double d2 = pattern[i-1][2] * centerVec[0] + pattern[i-1][3] * centerVec[1];
 
                 pattern.RemoveAt(d1 > d2 ? i - 1 : i);
 
@@ -87,52 +84,52 @@ namespace TreefallPatternAnalysis
             return pattern;
         }
 
-        public static unsafe float getConvergence(float[] p)
+        /*public static unsafe double getConvergence(double[] p)
         {
             unsafe
             {
-                fixed (float* p_ptr = p)
+                fixed (double* p_ptr = p)
                 {
                     return getConvergenceRankine(p_ptr);
                 }
             }
-        }
+        }*/
 
-        public static List<float> reverseAndRotateCCW(List<float> farray)
+        public static List<double> reverseAndRotateCCW(List<double> farray)
         {
-            List<float> newfarray = new List<float>(new float[farray.Count()]);
+            List<double> newfarray = new List<double>(new double[farray.Count()]);
 
             for (int i = 0; i < farray.Count() / 2; i++)
             {
-                newfarray[farray.Count() - i * 2 - 2] = -farray[i * 2 + 1];
-                newfarray[farray.Count() - i * 2 - 1] = farray[i * 2];
+                newfarray[i * 2] = -farray[i * 2 + 1];
+                newfarray[i * 2 + 1] = farray[i * 2];
 
             }
 
             return newfarray;
         }
 
-        public static List<float[]> reverseAndRotateCW(List<float[]> farray)
+        public static List<double[]> reverseAndRotateCW(List<double[]> farray)
         {
-            List<float[]> newfarray = new List<float[]>();
-            for(int i = farray.Count() - 1; i >= 0; i--)
+            List<double[]> newfarray = new List<double[]>();
+            for(int i = 0; i < farray.Count(); i++)
             {
-                newfarray.Add(new float[4] { farray[i][1], -farray[i][0], farray[i][3], -farray[i][2] });
+                newfarray.Add(new double[4] { farray[i][1], -farray[i][0], farray[i][3], -farray[i][2] });
             }
 
             return newfarray;
         }
 
 
-        /*public static unsafe List<float> reverse(List<float> fList) {
+        /*public static unsafe List<double> reverse(List<double> fList) {
 
-            fList.Add(float.NaN);
+            fList.Add(double.NaN);
 
             unsafe
             {
-                fixed (float* fListptr = fList.ToArray())
+                fixed (double* fListptr = fList.ToArray())
                 {
-                    float* reversed = reverseFloatArray(fListptr);
+                    double* reversed = reverseFloatArray(fListptr);
 
                     fList.Clear();
 
@@ -149,28 +146,29 @@ namespace TreefallPatternAnalysis
             return fList;
         }*/
 
-        private static unsafe bool IsNaN(float f)
+        private static unsafe bool IsNaN(double d)
         {
-            int binary = *(int*)(&f);
-            return ((binary & 0x7F800000) == 0x7F800000) && ((binary & 0x007FFFFF) != 0);
+            /*int binary = *(int*)(&f);
+            return ((binary & 0x7F800000) == 0x7F800000) && ((binary & 0x007FFFFF) != 0);*/
+            return (*(long*)(&d) & 0x7FF0000000000000L) == 0x7FF0000000000000L;
         }
 
-        private static unsafe List<float[]> parseNanTerminatedFloatArray(float** array_ptr, int size)
+        private static unsafe List<double[]> parseNanTerminatedDoubleArray(double** array_ptr, int size)
         {
-            List<float[]> parsedArray = new List<float[]>();
+            List<double[]> parsedArray = new List<double[]>();
 
             int i = 0;
             
             while (!IsNaN(array_ptr[i][0]))
             {
-                List<float> floats = new List<float>();
+                List<double> doubles = new List<double>();
 
                 for(int j = 0; j < size; j++)
                 {
-                    floats.Add(array_ptr[i][j]);
+                    doubles.Add(array_ptr[i][j]);
                 }
 
-                parsedArray.Add(floats.ToArray());
+                parsedArray.Add(doubles.ToArray());
 
                 i++;
             }

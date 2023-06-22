@@ -54,9 +54,9 @@ namespace TreefallPatternAnalysis
         private double[] convergenceLineX = Array.Empty<double>();
         private double[] convergenceLineY = Array.Empty<double>();
         private double[] convergenceLineDists = Array.Empty<double>();
-        //private List<float> patternVecs = new List<float>();
+        //private List<double> patternVecs = new List<double>();
         private int centerIdx = 0;
-        private float lastRunSpacing = 0;
+        private double lastRunSpacing = 40.0;
 
         private Dictionary<Slider, TextBox> sliderTextDict = new Dictionary<Slider, TextBox>();
 
@@ -85,11 +85,11 @@ namespace TreefallPatternAnalysis
             sliderTextDict.Add(transectLengthBelowSlider, transectLengthBelowBox);
             sliderTextDict.Add(transectWidthSlider, transectWidthBox);
                                                                                                                                                                    
-            /*float[] p = { -0.882947593f, -0.469471563f,  -0.891006524f, -0.4539905f,  -0.866025404f, -0.5f,  -0.121869343f, -0.992546152f,  -0.087155743f, -0.996194698f,  0.838670568f, -0.544639035f,  0.992546152f, 0.121869343f,  0.809016994f, 0.587785252f,  0.838670568f, 0.544639035f,  0.819152044f, 0.573576436f,  0.838670568f, 0.544639035f,  0.951056516f, 0.309016994f,  0.891006524f, 0.4539905f,  0.838670568f, 0.544639035f,  0.529919264f, 0.848048096f,  0.64278761f, 0.766044443f };
+            /*double[] p = { -0.882947593f, -0.469471563f,  -0.891006524f, -0.4539905f,  -0.866025404f, -0.5f,  -0.121869343f, -0.992546152f,  -0.087155743f, -0.996194698f,  0.838670568f, -0.544639035f,  0.992546152f, 0.121869343f,  0.809016994f, 0.587785252f,  0.838670568f, 0.544639035f,  0.819152044f, 0.573576436f,  0.838670568f, 0.544639035f,  0.951056516f, 0.309016994f,  0.891006524f, 0.4539905f,  0.838670568f, 0.544639035f,  0.529919264f, 0.848048096f,  0.64278761f, 0.766044443f };
 
             var matches = PatternSolver.solveBestMatches(p, 40.0f, 360.0f, 240.0f);
 
-            var bestMatch = PatternSolver.getPattern(new float[] { matches[0][1], matches[0][2], matches[0][3], matches[0][4], matches[0][5] }, 40.0f, new float[] { 0.819152044f, 0.573576436f });
+            var bestMatch = PatternSolver.getPattern(new double[] { matches[0][1], matches[0][2], matches[0][3], matches[0][4], matches[0][5] }, 40.0f, new double[] { 0.819152044f, 0.573576436f });
 
             System.Diagnostics.Debug.WriteLine("****************" + bestMatch.Count() + "****************");*/
 
@@ -239,7 +239,7 @@ namespace TreefallPatternAnalysis
             if (e == null || e.MiddleButton == MouseButtonState.Pressed)
             {
                 var plt = (WpfPlot)sender;
-                int spacing = (int)Math.Floor(float.Parse(vectorSpacing.Text, System.Globalization.CultureInfo.InvariantCulture));
+                int spacing = (int)Math.Floor(double.Parse(vectorSpacing.Text, CultureInfo.InvariantCulture));
 
                 int idx = transectCreationList.SelectedIndex;
 
@@ -268,7 +268,7 @@ namespace TreefallPatternAnalysis
             if (e == null || e.MiddleButton == MouseButtonState.Pressed)
             {
                 var plt = (WpfPlot)sender;
-                float spacing = lastRunSpacing;
+                double spacing = lastRunSpacing;
 
                 int idx = resultTransectsList.SelectedIndex;
 
@@ -314,7 +314,7 @@ namespace TreefallPatternAnalysis
             }
         }
 
-        //used to ensure you can only enter a positive floating point number into the textboxes
+        //used to ensure you can only enter a positive doubleing point number into the textboxes
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
             //text already in the text box
@@ -339,7 +339,7 @@ namespace TreefallPatternAnalysis
 
         }
 
-        //used to ensure you can only enter a positive floating point number into the textboxes
+        //used to ensure you can only enter a positive doubleing point number into the textboxes
         private void NegativeNumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
             /*//text already in the text box
@@ -394,9 +394,9 @@ namespace TreefallPatternAnalysis
             }
             else
             {
-                double lengthAbove = float.Parse(transectLengthAboveBox.Text, System.Globalization.CultureInfo.InvariantCulture);
-                double lengthBelow = float.Parse(transectLengthBelowBox.Text, System.Globalization.CultureInfo.InvariantCulture);
-                double width = float.Parse(transectWidthBox.Text, System.Globalization.CultureInfo.InvariantCulture);
+                double lengthAbove = double.Parse(transectLengthAboveBox.Text, CultureInfo.InvariantCulture);
+                double lengthBelow = double.Parse(transectLengthBelowBox.Text, CultureInfo.InvariantCulture);
+                double width = double.Parse(transectWidthBox.Text, CultureInfo.InvariantCulture);
 
                 var t = new Transect(convergenceLineX[0], convergenceLineY[0], lengthAbove, lengthBelow, width);
                 t.setPerpendicularAngle(convergenceLineX[0], convergenceLineY[0], convergenceLineX[1], convergenceLineY[1]);
@@ -440,14 +440,14 @@ namespace TreefallPatternAnalysis
 
             if (convergenceLineX.IsNullOrEmpty()) return;
 
-            double spacing = float.Parse(autoGenSpacing.Text, System.Globalization.CultureInfo.InvariantCulture);
+            double spacing = double.Parse(autoGenSpacing.Text, CultureInfo.InvariantCulture);
 
             for (double i = spacing; i < convergenceLineDists[convergenceLineDists.Length- 1]; i += spacing) 
             {
                 transectCreationList.Items.Add("T" + ++numOfTransectsCreated);
-                double lengthAbove = float.Parse(transectLengthAboveBox.Text, System.Globalization.CultureInfo.InvariantCulture);
-                double lengthBelow = float.Parse(transectLengthBelowBox.Text, System.Globalization.CultureInfo.InvariantCulture);
-                double width = float.Parse(transectWidthBox.Text, System.Globalization.CultureInfo.InvariantCulture);
+                double lengthAbove = double.Parse(transectLengthAboveBox.Text, CultureInfo.InvariantCulture);
+                double lengthBelow = double.Parse(transectLengthBelowBox.Text, CultureInfo.InvariantCulture);
+                double width = double.Parse(transectWidthBox.Text, CultureInfo.InvariantCulture);
 
                 for (int j = 1; j < convergenceLineDists.Length; j++)
                 {
@@ -525,7 +525,7 @@ namespace TreefallPatternAnalysis
                     }
                     else
                     {
-                        slider.Value = Math.Clamp(float.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture), slider.Minimum, slider.Maximum);
+                        slider.Value = Math.Clamp(double.Parse(tb.Text, CultureInfo.InvariantCulture), slider.Minimum, slider.Maximum);
                     }
                 } 
             }
@@ -614,16 +614,16 @@ namespace TreefallPatternAnalysis
                 }
             });
 
-            if (vectorSpacing.Text != null && vectorSpacing.Text.Length != 0 && Math.Floor(float.Parse(vectorSpacing.Text, System.Globalization.CultureInfo.InvariantCulture)) != 0.0)
+            if (vectorSpacing.Text != null && vectorSpacing.Text.Length != 0 && Math.Floor(double.Parse(vectorSpacing.Text, CultureInfo.InvariantCulture)) != 0.0)
             {
                 transectPatternPlot.Plot.Clear();
                 var patternField = transectPatternPlot.Plot.AddVectorFieldList();
                 patternField.Color = System.Drawing.Color.Blue;
                 patternField.ArrowStyle.ScaledArrowheads = true;
 
-                int spacing = (int)Math.Floor(float.Parse(vectorSpacing.Text, System.Globalization.CultureInfo.InvariantCulture));
-                int length = ((int)Math.Ceiling(transects[idx].lengthAbove / (float)spacing) + (int)Math.Ceiling(transects[idx].lengthBelow / (float)spacing)) * spacing;
-                int size = (int)Math.Ceiling(length / (float)spacing) + 1;
+                int spacing = (int)Math.Floor(double.Parse(vectorSpacing.Text, CultureInfo.InvariantCulture));
+                int length = ((int)Math.Ceiling(transects[idx].lengthAbove / (double)spacing) + (int)Math.Ceiling(transects[idx].lengthBelow / (double)spacing)) * spacing;
+                int size = (int)Math.Ceiling(length / (double)spacing) + 1;
 
                 List<(double, double)>[] patternBins = new List<(double, double)>[size];
 
@@ -669,8 +669,8 @@ namespace TreefallPatternAnalysis
                             avgX /= mag;
                             avgY /= mag;
 
-                            transects[idx].patternVecs.Add((float)avgX);
-                            transects[idx].patternVecs.Add((float)avgY);
+                            transects[idx].patternVecs.Add((double)avgX);
+                            transects[idx].patternVecs.Add((double)avgY);
 
                             avgX *= spacing;
                             avgY *= spacing;
@@ -711,8 +711,8 @@ namespace TreefallPatternAnalysis
                             medX /= mag;
                             medY /= mag;
 
-                            transects[idx].patternVecs.Add((float)medX);
-                            transects[idx].patternVecs.Add((float)medY);
+                            transects[idx].patternVecs.Add((double)medX);
+                            transects[idx].patternVecs.Add((double)medY);
 
                             medX *= spacing;
                             medY *= spacing;
@@ -844,20 +844,23 @@ namespace TreefallPatternAnalysis
 
             loadingBarWindow.Content = g;
 
-            float spacing = (int)Math.Floor(float.Parse(vectorSpacing.Text, System.Globalization.CultureInfo.InvariantCulture));
+            double spacing = (int)Math.Floor(double.Parse(vectorSpacing.Text, CultureInfo.InvariantCulture));
             lastRunSpacing = spacing;
 
-            float[] modelParams = getModelParameters();
+            int modelType = modelTypeListView.SelectedIndex > 0 ? modelTypeListView.SelectedIndex : 0;
+            int compareType = errorTypeListView.SelectedIndex > 0 ? errorTypeListView.SelectedIndex : 0;
+            int weightType = weightTypeListView.SelectedIndex > 0 ? weightTypeListView.SelectedIndex : 0;
+
+            double[] modelParams = getModelParameters();
 
             for (int i = 0; i < transects.Count(); i++)
             {
                 await QueuedTask.Run(() =>
                 {
-                    transects[i].matches = PatternSolver.solveBestMatches(transects[i].patternVecs,
-                                                                          modelParams,
-                                                                          spacing,
-                                                                          (float)Math.Ceiling(transects[i].lengthBelow / spacing) * spacing,
-                                                                          (float)Math.Ceiling(transects[i].lengthAbove / spacing) * spacing);
+                    transects[i].matches = PatternSolver.solveBestMatches(transects[i].patternVecs, modelParams, modelType, compareType, weightType, spacing, 
+                                                                          Math.Ceiling(transects[i].lengthAbove / spacing) * spacing,
+                                                                          Math.Ceiling(transects[i].lengthBelow / spacing) * spacing);
+
                 });
                 pb.Value++;
             }
@@ -886,21 +889,21 @@ namespace TreefallPatternAnalysis
                 return;
             }
 
-            float spacing = (int)Math.Floor(float.Parse(vectorSpacing.Text, System.Globalization.CultureInfo.InvariantCulture));
+            double spacing = (int)Math.Floor(double.Parse(vectorSpacing.Text, CultureInfo.InvariantCulture));
 
             //patternVecs.Reverse();
 
-            //List<float> reversedPatternVecs = PatternSolver.reverseAndRotate(patternVecs);
+            //List<double> reversedPatternVecs = PatternSolver.reverseAndRotate(patternVecs);
 
             //System.Diagnostics.Debug.WriteLine(patternVecs.Count());
 
-            
+            int modelType = modelTypeListView.SelectedIndex > 0 ? modelTypeListView.SelectedIndex : 0;
+            int compareType = errorTypeListView.SelectedIndex > 0 ? errorTypeListView.SelectedIndex : 0;
+            int weightType = weightTypeListView.SelectedIndex > 0 ? weightTypeListView.SelectedIndex : 0;
 
-            var matches = PatternSolver.solveBestMatches(transects[idx].patternVecs,
-                                                         getModelParameters(),
-                                                         spacing,
-                                                         (float)Math.Ceiling(transects[idx].lengthBelow / spacing) * spacing,
-                                                         (float)Math.Ceiling(transects[idx].lengthAbove / spacing) * spacing);
+            var matches = PatternSolver.solveBestMatches(transects[idx].patternVecs, getModelParameters(), modelType, compareType, weightType, spacing,
+                                                                          Math.Ceiling(transects[idx].lengthAbove / spacing) * spacing,
+                                                                          Math.Ceiling(transects[idx].lengthBelow / spacing) * spacing);
 
             System.Diagnostics.Debug.WriteLine(matches.Count());
 
@@ -908,14 +911,14 @@ namespace TreefallPatternAnalysis
 
             //System.Diagnostics.Debug.WriteLine("************" + matches[0][1] + ", " + matches[0][2] + ", " + matches[0][3] + ", " + matches[0][4] + ", " + matches[0][5]);
 
-            var bestMatch = PatternSolver.getPattern(new float[] { matches[0][1], matches[0][2], matches[0][3], matches[0][4], matches[0][5] }, spacing, new float[] { transects[idx].patternVecs[centerIdx*2], transects[idx].patternVecs[centerIdx*2+1]});
-            //float c = PatternSolver.getConvergence(new float[] { matches[0][1], matches[0][2], matches[0][3], matches[0][4], matches[0][5] });
+            var bestMatch = PatternSolver.getPattern(new double[] { matches[0][1], matches[0][2], matches[0][3], matches[0][4], matches[0][5], matches[0][6] }, modelType, spacing,
+                                                     new double[] { transects[idx].patternVecs[centerIdx * 2], transects[idx].patternVecs[centerIdx * 2 + 1] });
 
             var patternField = transectPatternPlot.Plot.AddVectorFieldList();
             patternField.Color = System.Drawing.Color.DarkRed;
             patternField.ArrowStyle.ScaledArrowheads = true;
 
-            foreach (float[] v in bestMatch)
+            foreach (double[] v in bestMatch)
             {
                 patternField.RootedVectors.Add((new Coordinate(0, v[1]), new CoordinateVector(v[2] * spacing, v[3] * spacing)));
             }
@@ -966,27 +969,30 @@ namespace TreefallPatternAnalysis
 
         }
 
-        private float[] getModelParameters()
+        private double[] getModelParameters()
         {
-            float[] modelParameters = new float[17];
+            double[] modelParameters = new double[20];
 
-            modelParameters[0] = float.Parse(vtmin.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[1] = float.Parse(vtmax.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[2] = float.Parse(vtstep.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[3] = float.Parse(vrmin.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[4] = float.Parse(vrmax.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[5] = float.Parse(vrstep.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[6] = float.Parse(vsmin.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[7] = float.Parse(vsmax.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[8] = float.Parse(vsstep.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[9] = float.Parse(vcmin.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[10] = float.Parse(vcmax.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[11] = float.Parse(vcstep.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[12] = float.Parse(rmaxmin.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[13] = float.Parse(rmaxmax.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[14] = float.Parse(rmaxstep.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[15] = float.Parse(allowedLengthDifference.Text, System.Globalization.CultureInfo.InvariantCulture);
-            modelParameters[16] = float.Parse(maxLengthDifference.Text, System.Globalization.CultureInfo.InvariantCulture);
+            modelParameters[0] = double.Parse(vtmin.Text, CultureInfo.InvariantCulture);
+            modelParameters[1] = double.Parse(vtmax.Text, CultureInfo.InvariantCulture);
+            modelParameters[2] = double.Parse(vtstep.Text, CultureInfo.InvariantCulture);
+            modelParameters[3] = double.Parse(vrmin.Text, CultureInfo.InvariantCulture);
+            modelParameters[4] = double.Parse(vrmax.Text, CultureInfo.InvariantCulture);
+            modelParameters[5] = double.Parse(vrstep.Text, CultureInfo.InvariantCulture);
+            modelParameters[6] = double.Parse(vsmin.Text, CultureInfo.InvariantCulture);
+            modelParameters[7] = double.Parse(vsmax.Text, CultureInfo.InvariantCulture);
+            modelParameters[8] = double.Parse(vsstep.Text, CultureInfo.InvariantCulture);
+            modelParameters[9] = double.Parse(vcmin.Text, CultureInfo.InvariantCulture);
+            modelParameters[10] = double.Parse(vcmax.Text, CultureInfo.InvariantCulture);
+            modelParameters[11] = double.Parse(vcstep.Text, CultureInfo.InvariantCulture);
+            modelParameters[12] = double.Parse(rmaxmin.Text, CultureInfo.InvariantCulture);
+            modelParameters[13] = double.Parse(rmaxmax.Text, CultureInfo.InvariantCulture);
+            modelParameters[14] = double.Parse(rmaxstep.Text, CultureInfo.InvariantCulture);
+            modelParameters[15] = double.Parse(phimin.Text, CultureInfo.InvariantCulture);
+            modelParameters[16] = double.Parse(phimax.Text, CultureInfo.InvariantCulture);
+            modelParameters[17] = double.Parse(phistep.Text, CultureInfo.InvariantCulture);
+            modelParameters[18] = double.Parse(allowedLengthDifference.Text, CultureInfo.InvariantCulture);
+            modelParameters[19] = double.Parse(maxLengthDifference.Text, CultureInfo.InvariantCulture);
 
             return modelParameters;
         }
@@ -1013,14 +1019,14 @@ namespace TreefallPatternAnalysis
 
             double[] matchVelocities = new double[transects[idx].matches.Count];
 
-            float[] minMatch = transects[idx].matches[0];
+            double[] minMatch = transects[idx].matches[0];
             
             for (int i = 0; i < transects[idx].matches.Count; i++)
             {
                 var m = transects[idx].matches[i];
-                matchVelocities[i] = m[6];
+                matchVelocities[i] = m[7];
 
-                if (m[6] < minMatch[6])
+                if (m[7] < minMatch[7])
                 {
                     minMatch = m;
                 }
@@ -1061,7 +1067,7 @@ namespace TreefallPatternAnalysis
 
             if (mIdx < 0 || tIdx < 0) return;
 
-            float[] match = transects[tIdx].matches[mIdx];
+            double[] match = transects[tIdx].matches[mIdx];
 
             matchInfoListBox.Items.Clear();
 
@@ -1071,12 +1077,15 @@ namespace TreefallPatternAnalysis
             matchInfoListBox.Items.Add("Vs: " + match[3].ToString());
             matchInfoListBox.Items.Add("Vc: " + match[4].ToString());
             matchInfoListBox.Items.Add("Rmax: " + match[5].ToString());
-            matchInfoListBox.Items.Add("Vmax: " + match[6].ToString());
+            matchInfoListBox.Items.Add("Phi: " + Math.Round(match[6], 2).ToString());
+            matchInfoListBox.Items.Add("Vmax: " + match[7].ToString());
 
             centerIdx = (int)Math.Ceiling(transects[tIdx].lengthBelow / lastRunSpacing);
 
+            //replace 
+            int modelType = 0;
 
-            var bestMatch = PatternSolver.getPattern(new float[] { match[1], match[2], match[3], match[4], match[5] }, lastRunSpacing, new float[] { transects[tIdx].patternVecs[centerIdx * 2], transects[tIdx].patternVecs[centerIdx * 2 + 1] });
+            var bestMatch = PatternSolver.getPattern(new double[] { match[1], match[2], match[3], match[4], match[5], match[6] }, modelType, lastRunSpacing, new double[] { transects[tIdx].patternVecs[centerIdx * 2], transects[tIdx].patternVecs[centerIdx * 2 + 1] });
 
             matchedPatternPlot.Plot.Clear();
 
@@ -1095,13 +1104,55 @@ namespace TreefallPatternAnalysis
             matchedPatternField.Color = System.Drawing.Color.DarkRed;
             matchedPatternField.ArrowStyle.ScaledArrowheads = true;
 
-            foreach (float[] v in bestMatch)
+            foreach (double[] v in bestMatch)
             {
                 matchedPatternField.RootedVectors.Add((new Coordinate(0, v[1]), new CoordinateVector(v[2] * lastRunSpacing, v[3] * lastRunSpacing)));
             }
 
             rescaleMatchedPatternPlot(matchedPatternPlot, null);
             matchedPatternPlot.Refresh();
+        }
+
+        private void paramSliderChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            int idx = transectCreationList.SelectedIndex;
+
+            if (idx < 0)
+            {
+                return;
+            }
+
+            centerIdx = (int)Math.Ceiling(transects[idx].lengthBelow / lastRunSpacing);
+
+            //replace 
+            int modelType = 0;
+
+            var bestMatch = PatternSolver.getPattern(new double[] { vtSlider.Value, vrSlider.Value, vsSlider.Value, vcSlider.Value, rmaxSlider.Value, phiSlider.Value }, modelType, lastRunSpacing, new double[] { transects[idx].patternVecs[centerIdx * 2], transects[idx].patternVecs[centerIdx * 2 + 1] });
+
+            manualMatchPatternPlot.Plot.Clear();
+
+            var patternField = manualMatchPatternPlot.Plot.AddVectorFieldList();
+            //patternField.Color = System.Drawing.Color.DarkRed;
+            patternField.ArrowStyle.ScaledArrowheads = true;
+
+            double above = Math.Ceiling(transects[idx].lengthAbove / lastRunSpacing) * lastRunSpacing;
+
+            for (int i = 0; i < transects[idx].patternVecs.Count() / 2; i++)
+            {
+                patternField.RootedVectors.Add((new Coordinate(0, above - i * lastRunSpacing), new CoordinateVector(transects[idx].patternVecs[i * 2] * lastRunSpacing, transects[idx].patternVecs[i * 2 + 1] * lastRunSpacing)));
+            }
+
+            var matchedPatternField = manualMatchPatternPlot.Plot.AddVectorFieldList();
+            matchedPatternField.Color = System.Drawing.Color.DarkRed;
+            matchedPatternField.ArrowStyle.ScaledArrowheads = true;
+
+            foreach (double[] v in bestMatch)
+            {
+                matchedPatternField.RootedVectors.Add((new Coordinate(0, v[1]), new CoordinateVector(v[2] * lastRunSpacing, v[3] * lastRunSpacing)));
+            }
+
+            rescaleMatchedPatternPlot(manualMatchPatternPlot, null);
+            manualMatchPatternPlot.Refresh();
         }
     }
 }

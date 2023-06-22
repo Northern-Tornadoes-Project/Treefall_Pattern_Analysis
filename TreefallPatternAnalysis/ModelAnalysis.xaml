@@ -6,6 +6,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
         mc:Ignorable="d"
+        ResizeMode="CanResize"
+        ShowMinButton="True" 
         Title="ModelAnalysis" Height="720" Width="1080"
         WindowStartupLocation="CenterOwner"
     >
@@ -120,7 +122,7 @@
                                 <Label Content="Display Solution Curve"/>
                             </CheckBox>
                         </StackPanel>
-                        
+
                     </Grid>
                 </TabItem>
                 <TabItem Header="Vortex Models">
@@ -128,7 +130,7 @@
                 </TabItem>
             </TabControl>
         </Grid>
-        <TabControl>
+        <TabControl x:Name="utilityTab">
             <TabItem Header="Model Grapher">
                 <Grid Background="#FFE5E5E5">
                     <WpfPlot Name="graphPlot" HorizontalAlignment="Center" Height="571" VerticalAlignment="Top" Width="812" Margin="0,2,0,0">
@@ -147,7 +149,40 @@
                 <Grid Background="#FFE5E5E5" />
             </TabItem>
             <TabItem Header="Model Profiles">
-                <Grid Background="#FFE5E5E5" />
+                <Grid Background="#FFE5E5E5" >
+                    <WpfPlot x:Name="profilePlot" HorizontalAlignment="Center" Height="468" Margin="0,10,0,0" VerticalAlignment="Top" Width="814"/>
+                    <ListBox x:Name="graphedProfilesListBox" HorizontalAlignment="Left" Height="137" Margin="10,529,0,0" VerticalAlignment="Top" Width="231">
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Add New" Click="addNewProfile"/>
+                                <Separator/>
+                                <MenuItem Header="Delete Selected" Click="deleteSelectedProfile"/>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
+                    <ComboBox x:Name="profileModelSelection" HorizontalAlignment="Left" Height="30" Margin="266,530,0,0" VerticalAlignment="Top" Width="178">
+                        <ComboBoxItem Content="Modified-Rankine"/>
+                        <ComboBoxItem Content="Baker-Sterling"/>
+                    </ComboBox>
+                    <ComboBox x:Name="profileStyleSelection" HorizontalAlignment="Left" Height="30" Margin="494,529,0,0" VerticalAlignment="Top" Width="178">
+                        <ComboBoxItem Content="Solid"/>
+                        <ComboBoxItem Content="Dash"/>
+                        <ComboBoxItem Content="Dot"/>
+                        <ComboBoxItem Content="DashDot"/>
+                        <ComboBoxItem Content="DashDotDot"/>
+                    </ComboBox>
+                    <ComboBox x:Name="profileTypeSelection" HorizontalAlignment="Left" Height="30" Margin="266,598,0,0" VerticalAlignment="Top" Width="178">
+                        <ComboBoxItem Content="Vr"/>
+                        <ComboBoxItem Content="Vt"/>
+                        <ComboBoxItem Content="Vs"/>
+                        <ComboBoxItem Content="Vc"/>
+                    </ComboBox>
+                    <Button Content="Add New" HorizontalAlignment="Left" Height="30" Margin="696,636,0,0" VerticalAlignment="Top" Width="98" RenderTransformOrigin="0.718,0.365" Click="addNewProfile"/>
+                    <Label Content="Graphed Items" HorizontalAlignment="Left" Height="24" Margin="10,505,0,0" VerticalAlignment="Top" Width="178"/>
+                    <Label Content="Model Selection" HorizontalAlignment="Left" Height="24" Margin="266,506,0,0" VerticalAlignment="Top" Width="178"/>
+                    <Label Content="Profile Type" HorizontalAlignment="Left" Height="24" Margin="266,574,0,0" VerticalAlignment="Top" Width="178"/>
+                    <Label Content="Graph Style" HorizontalAlignment="Left" Height="24" Margin="494,505,0,0" VerticalAlignment="Top" Width="178"/>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>

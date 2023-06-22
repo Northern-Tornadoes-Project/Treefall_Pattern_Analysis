@@ -10,8 +10,8 @@ namespace TreefallPatternAnalysis
     class Transect
     {
         public double x, y, theta, lengthAbove, lengthBelow, width, positionOffset, heightOffset, angleOffset;
-        public List<float> patternVecs = new List<float>();
-        public List<float[]> matches = new List<float[]>();
+        public List<double> patternVecs = new List<double>();
+        public List<double[]> matches = new List<double[]>();
         public ScottPlot.Plottable.Polygon box;
         private ScottPlot.Plottable.MarkerPlot marker;
         private ScottPlot.Plottable.ScatterPlot perpLine;

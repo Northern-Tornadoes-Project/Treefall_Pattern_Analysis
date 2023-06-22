@@ -173,7 +173,10 @@
             </TabItem>
             <TabItem Header="Model and Parameters">
                 <Grid Background="#FFE5E5E5" Margin="-2,0,2,0">
-                    <ListView ScrollViewer.VerticalScrollBarVisibility="Visible" d:ItemsSource="{d:SampleData ItemCount=5}" Width="200" Margin="2,32,1072,0"/>
+                    <ListBox x:Name="modelTypeListView" ScrollViewer.VerticalScrollBarVisibility="Visible" Width="200" Margin="2,32,1072,0" SelectedIndex="0">
+                        <ListBoxItem Content="Modified Rankine" FontSize="20" Padding="10" Margin="0,10,0,0" BorderBrush="Black"/>
+                        <ListBoxItem Content="Baker-Sterling" FontSize="20"  Padding="10" Margin="0,10,0,0" BorderBrush="Black"/>
+                    </ListBox>
                     <Label Content="Vortex Model Parameter Ranges" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Height="45" Margin="222,10,0,0" VerticalAlignment="Top" Width="315"/>
                     <Rectangle HorizontalAlignment="Left" Height="675" Margin="200,0,0,0" StrokeThickness="1" Stroke="Black" VerticalAlignment="Center" Width="2" RenderTransformOrigin="0.5,0.5">
                         <Rectangle.RenderTransform>
@@ -215,6 +218,7 @@
                     <Label Content="Vs" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="600,100,0,0" VerticalAlignment="Top" Width="30"/>
                     <Label Content="Vc" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="725,100,0,0" VerticalAlignment="Top" Width="30"/>
                     <Label Content="Rmax" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="838,100,0,0" VerticalAlignment="Top" Width="52"/>
+                    <Label Content="Phi" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="963,100,0,0" VerticalAlignment="Top" Width="52"/>
                     <Label Content="Min" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="250,150,0,0" VerticalAlignment="Top" Width="40"/>
                     <Label Content="Max" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="250,225,0,0" VerticalAlignment="Top" Width="49"/>
                     <Label Content="Step" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="250,300,0,0" VerticalAlignment="Top" Width="49"/>
@@ -233,21 +237,21 @@
                     <TextBox x:Name="rmaxmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="838,154,0,0" TextWrapping="Wrap" Text="80" VerticalAlignment="Top" Width="54"/>
                     <TextBox x:Name="rmaxmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="838,229,0,0" TextWrapping="Wrap" Text="400" VerticalAlignment="Top" Width="54"/>
                     <TextBox x:Name="rmaxstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="838,304,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="54"/>
+                    <TextBox x:Name="phimin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="963,154,0,0" TextWrapping="Wrap" Text="0.65" VerticalAlignment="Top" Width="54"/>
+                    <TextBox x:Name="phimax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="963,229,0,0" TextWrapping="Wrap" Text="1.35" VerticalAlignment="Top" Width="54"/>
+                    <TextBox x:Name="phistep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="963,304,0,0" TextWrapping="Wrap" Text="0.05" VerticalAlignment="Top" Width="54"/>
                     <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="392,150,0,0" VerticalAlignment="Top" Width="40"/>
-                    <ListView HorizontalAlignment="Left" Height="187" Margin="791,417,0,0" VerticalAlignment="Top" Width="199" d:ItemsSource="{d:SampleData ItemCount=5}">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                    <ListView HorizontalAlignment="Left" Height="189" Margin="1060,415,0,0" VerticalAlignment="Top" Width="198" d:ItemsSource="{d:SampleData ItemCount=5}">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
+                    <ListBox x:Name="errorTypeListView" HorizontalAlignment="Left" Height="187" Margin="791,417,0,0" VerticalAlignment="Top" Width="199" SelectedIndex="0">
+                        <ListBoxItem Content="Dot Product" FontSize="18" Padding="5" BorderBrush="Black"/>
+                        <ListBoxItem Content="Angle Difference" FontSize="18" Padding="5" Margin="0,10,0,0" BorderBrush="Black"/>
+                        <ListBoxItem Content="Cord Length" FontSize="18" Padding="5" Margin="0,10,0,0" BorderBrush="Black"/>
+                        <ListBoxItem Content="Sum Magnitude" FontSize="18" Padding="5" Margin="0,10,0,0" BorderBrush="Black"/>
+                    </ListBox>
+                    <ListBox x:Name="weightTypeListView" HorizontalAlignment="Left" Height="189" Margin="1060,415,0,0" VerticalAlignment="Top" Width="198" SelectedIndex="0">
+                        <ListBoxItem Content="Constant" FontSize="18" Padding="5" BorderBrush="Black"/>
+                        <ListBoxItem Content="Inverse Distance" FontSize="18" Padding="5" Margin="0,10,0,0" BorderBrush="Black"/>
+                        <ListBoxItem Content="Independent Inv Dist" FontSize="18" Padding="5" Margin="0,10,0,0" BorderBrush="Black"/>
+                    </ListBox>
                     <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="392,225,0,0" VerticalAlignment="Top" Width="40"/>
                     <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="392,300,0,0" VerticalAlignment="Top" Width="40"/>
                     <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="517,300,0,0" VerticalAlignment="Top" Width="40"/>
@@ -313,6 +317,91 @@
                     <Button Content="Export Selected" HorizontalAlignment="Left" Height="35" Margin="100,635,0,0" VerticalAlignment="Top" Width="105"/>
                     <Button Content="Export All" HorizontalAlignment="Left" Height="35" Margin="0,635,0,0" VerticalAlignment="Top" Width="105" Grid.Column="1"/>
                     <Button Content="Next" FontSize="16" HorizontalAlignment="Left" Height="27" Margin="909,639,0,0" VerticalAlignment="Top" Width="82" Grid.Column="1"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Manual Matching">
+                <Grid>
+                    <WpfPlot MouseDown="rescaleMatchedPatternPlot" x:Name="manualMatchPatternPlot" HorizontalAlignment="Left" Height="643" Margin="398,23,0,0" VerticalAlignment="Top" Width="252"/>
+                    <StackPanel HorizontalAlignment="Left" Height="676" VerticalAlignment="Center" Width="260">
+                        <Label Height="28" Content="Phi (exponential scaling factor)" Width="200" Margin="0, 20, 0, 0" />
+                        <Slider Name="phiSlider" AutoToolTipPlacement="BottomRight" TickPlacement="None" AutoToolTipPrecision="2" HorizontalAlignment="Center" Height="22" Width="83" Minimum="0.5" Maximum="1.5" TickFrequency="0.05" IsSnapToTickEnabled="True" SmallChange="0.05" LargeChange="0.1" Value="1" ValueChanged="paramSliderChanged" RenderTransformOrigin="0.5,0.5">
+                            <Slider.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="3"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Slider.RenderTransform>
+                            <!--Unknown connection ID: 1-->
+                        </Slider>
+                        <Label Content="{Binding ElementName=phiSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
+                        <Label Height="28" Content="Vr (Max Radial Wind Velocity)" Width="200" Margin="0, 0, 0, 0" />
+                        <Slider Name="vrSlider" HorizontalAlignment="Center" TickPlacement="None" Height="22" Width="83" Maximum="80" Minimum="20" LargeChange="5" SmallChange="1" Value="70" ValueChanged="paramSliderChanged" IsSnapToTickEnabled="True" RenderTransformOrigin="0.5,0.5">
+                            <Slider.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="3"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Slider.RenderTransform>
+                            <!--Unknown connection ID: 2-->
+                        </Slider>
+                        <Label Content="{Binding ElementName=vrSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
+                        <Label Height="28" Content="Vt (Max Tangential Wind Velocity)" Width="200" Margin="0, 0, 0, 0" />
+                        <Slider Name="vtSlider" HorizontalAlignment="Center" TickPlacement="None" Height="22" Width="83" LargeChange="5" Maximum="50" Minimum="1" SmallChange="1" TickFrequency="1" Value="40" ValueChanged="paramSliderChanged" IsSnapToTickEnabled="True" RenderTransformOrigin="0.5,0.5">
+                            <Slider.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="3"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Slider.RenderTransform>
+                            <!--Unknown connection ID: 3-->
+                        </Slider>
+                        <Label Content="{Binding ElementName=vtSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
+                        <Label Height="28" Content="Vs (Displacement Velocity)" Width="200" Margin="0, 0, 0, 0" />
+                        <Slider Name="vsSlider" HorizontalAlignment="Center" TickPlacement="None" Height="22" Width="83" LargeChange="5" Maximum="30" Minimum="1" SmallChange="1" TickFrequency="1" Value="23" ValueChanged="paramSliderChanged" IsSnapToTickEnabled="True" RenderTransformOrigin="0.5,0.5">
+                            <Slider.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="3"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Slider.RenderTransform>
+                            <!--Unknown connection ID: 4-->
+                        </Slider>
+                        <Label Content="{Binding ElementName=vsSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
+                        <Label Height="28" Content="Vc (Tree Failure Velocity)" Width="200" Margin="0, 0, 0, 0" />
+                        <Slider Name="vcSlider" HorizontalAlignment="Center" TickPlacement="None" Height="22" Width="83" LargeChange="5" Maximum="65" Minimum="35" SmallChange="1" TickFrequency="1" Value="40" ValueChanged="paramSliderChanged" IsSnapToTickEnabled="True" RenderTransformOrigin="0.5,0.5">
+                            <Slider.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="3"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Slider.RenderTransform>
+                            <!--Unknown connection ID: 5-->
+                        </Slider>
+                        <Label Content="{Binding ElementName=vcSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
+                        <Label Height="28" Content="Rmax (Radius of Maximum Velocity)" Width="200" Margin="0, 0, 0, 0" />
+                        <Slider Name="rmaxSlider" HorizontalAlignment="Center" TickPlacement="None" Height="22" Width="83" LargeChange="20" Maximum="500" Minimum="10" SmallChange="5" TickFrequency="5" Value="200" ValueChanged="paramSliderChanged" IsSnapToTickEnabled="True" RenderTransformOrigin="0.5,0.5">
+                            <Slider.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="3"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Slider.RenderTransform>
+                            <!--Unknown connection ID: 6-->
+                        </Slider>
+                        <Label Content="{Binding ElementName=rmaxSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
+                    </StackPanel>
                 </Grid>
             </TabItem>
             <TabItem Header="Wind Field">
