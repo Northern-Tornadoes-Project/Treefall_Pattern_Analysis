@@ -1082,8 +1082,8 @@ namespace TreefallPatternAnalysis
 
             centerIdx = (int)Math.Ceiling(transects[tIdx].lengthBelow / lastRunSpacing);
 
-            //replace 
-            int modelType = 0;
+
+            int modelType = modelTypeListView.SelectedIndex > 0 ? modelTypeListView.SelectedIndex : 0;
 
             var bestMatch = PatternSolver.getPattern(new double[] { match[1], match[2], match[3], match[4], match[5], match[6] }, modelType, lastRunSpacing, new double[] { transects[tIdx].patternVecs[centerIdx * 2], transects[tIdx].patternVecs[centerIdx * 2 + 1] });
 
