@@ -1,6 +1,10 @@
-﻿using ScottPlot.Drawing.Colormaps;
+﻿using ArcGIS.Core.Data.UtilityNetwork.Trace;
+using ScottPlot;
+using ScottPlot.Drawing.Colormaps;
+using ScottPlot.Statistics;
 using System;
 using System.Collections.Generic;
+using System.DirectoryServices;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -15,8 +19,50 @@ namespace TreefallPatternAnalysis
         private static unsafe extern double** matchPattern(double* p, double[] modelParams, int modelType, int compareType, int weightType, double dx, double wAbove, double wBelow);
         [DllImport("D:\\PatternSolver\\x64\\Release\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
         private static unsafe extern double** generatePattern(double[] modelParams, int modelType, double dx);
-        /*[DllImport("F:\\PatternSolver\\x64\\Release\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static unsafe extern double getConvergenceRankine(double* p);*/
+        [DllImport("D:\\PatternSolver\\x64\\Release\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static unsafe extern double*** generateField(double[] fieldParams, double[] modelParams, int modelType);
+
+        public record Field(double[,] m, Vector2[,] v, double[] x, double[] y)
+        {
+            public double[,] magnitudes { get; init; } = m;
+            public Vector2[,] unitVecs { get; init; } = v;
+            public double[] xPositions { get; init; } = x;
+            public double[] yPositions { get; init; } = y;
+        }
+
+        public static unsafe Field getField(double[] fieldParams, double[] modelParams, int modelType)
+        {
+            double wx = fieldParams[2] - fieldParams[0];
+            double wy = fieldParams[3] - fieldParams[1];
+            double dx = fieldParams[4];
+
+            double[,] magnitudes = new double[(int)Math.Floor(wy / dx) + 1, (int)Math.Floor(wx / dx) + 1];
+            Vector2[,] unitVecs = new Vector2[(int)Math.Floor(wx / dx) + 1, (int)Math.Floor(wy / dx) + 1];
+            double[] xPositions = new double[(int)Math.Floor(wx / dx) + 1];
+            double[] yPositions = new double[(int)Math.Floor(wy / dx) + 1];
+
+            unsafe
+            {
+                double*** field_ptr = generateField(fieldParams, modelParams, modelType);
+
+                for(int i = 0; i < (int)Math.Floor(wy / dx) + 1; i++)
+                {
+                    yPositions[i] = field_ptr[i][0][1];
+                    for (int j = 0; j < (int)Math.Floor(wx / dx) + 1; j++)
+                    {
+                        magnitudes[i, j] = field_ptr[i][j][4];
+                        unitVecs[j, i] = new Vector2(field_ptr[i][j][2], field_ptr[i][j][3]);
+
+                        if (i != 0) continue;
+
+                        xPositions[j] = field_ptr[0][j][0];
+                    }
+                }
+
+            }
+
+            return new Field(magnitudes, unitVecs, xPositions, yPositions);
+        }
 
         public static unsafe List<double[]> solveBestMatches(List<double> p, double[] modelParams, int modelType, int compareType, int weightType, double dx, double wAbove, double wBelow)
         {
@@ -38,7 +84,7 @@ namespace TreefallPatternAnalysis
             return matches;
         }
 
-        public static unsafe List<double[]> getPattern(double[] modelParams, int modelType, double dx)
+        public static unsafe List<double[]> getPattern(double[] modelParams, int modelType, double dx, bool rotate = true)
         {
             List<double[]> pattern;
 
@@ -52,12 +98,16 @@ namespace TreefallPatternAnalysis
                 double c = pattern[pattern.Count - 1][0];
                 pattern.RemoveAt(pattern.Count - 1);
 
-                pattern = reverseAndRotateCW(pattern);
-
-                for(int i = 0; i < pattern.Count(); i++)
+                if (rotate)
                 {
-                    pattern[i][1] += c;
+                    pattern = reverseAndRotateCW(pattern);
+
+                    for (int i = 0; i < pattern.Count(); i++)
+                    {
+                        pattern[i][1] += c;
+                    }
                 }
+                 
             }
 
             return pattern;

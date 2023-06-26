@@ -64,7 +64,7 @@
                             </Slider>
                             <Label Content="{Binding ElementName=vtSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:N2}" HorizontalAlignment="Center" ></Label>
                             <Label Height="28" Content="Vs (Displacement Velocity)" Width="200" Margin="0, 0, 0, 0" />
-                            <Slider Name="vsSlider" HorizontalAlignment="Center" TickPlacement="None" Height="22" Width="83" LargeChange="5" Maximum="30" Minimum="1" SmallChange="1" TickFrequency="1" Value="23" ValueChanged="paramSliderChanged" IsSnapToTickEnabled="True" RenderTransformOrigin="0.5,0.5">
+                            <Slider Name="vsSlider" HorizontalAlignment="Center" TickPlacement="None" Height="22" Width="83" LargeChange="5" Maximum="25" Minimum="1" SmallChange="1" TickFrequency="1" Value="15" ValueChanged="paramSliderChanged" IsSnapToTickEnabled="True" RenderTransformOrigin="0.5,0.5">
                                 <Slider.RenderTransform>
                                     <TransformGroup>
                                         <ScaleTransform ScaleX="3"/>
@@ -126,11 +126,16 @@
                     </Grid>
                 </TabItem>
                 <TabItem Header="Vortex Models">
-                    <Grid Background="#FFE5E5E5" />
+                    <Grid Background="#FFE5E5E5" Margin="0,0,-2,0">
+                        <ListBox x:Name="modelTypeListView" ScrollViewer.VerticalScrollBarVisibility="Visible" SelectedIndex="0" Margin="1,0,0,0" SelectionChanged="modelTypeChanged">
+                            <ListBoxItem Content="Modified Rankine" FontSize="20" Padding="10" Margin="0,10,0,0" BorderBrush="Black"/>
+                            <ListBoxItem Content="Baker-Sterling" FontSize="20"  Padding="10" Margin="0,10,0,0" BorderBrush="Black"/>
+                        </ListBox>
+                    </Grid>
                 </TabItem>
             </TabControl>
         </Grid>
-        <TabControl x:Name="utilityTab">
+        <TabControl x:Name="utilityTab" SelectionChanged="utilityTabChanged">
             <TabItem Header="Model Grapher">
                 <Grid Background="#FFE5E5E5">
                     <WpfPlot Name="graphPlot" HorizontalAlignment="Center" Height="571" VerticalAlignment="Top" Width="812" Margin="0,2,0,0">
@@ -141,8 +146,8 @@
             </TabItem>
             <TabItem Header="Pattern Solver">
                 <Grid Background="#FFE5E5E5">
-                    <WpfPlot HorizontalAlignment="Left" Height="144" VerticalAlignment="Top" Width="885" Margin="-51,573,0,0" />
-                    <WpfPlot HorizontalAlignment="Center" Height="571" VerticalAlignment="Top" Width="812" Margin="0,2,0,0" />
+                    <WpfPlot x:Name="patternPlot" HorizontalAlignment="Left" Height="144" VerticalAlignment="Top" Width="885" Margin="-51,573,0,0" />
+                    <WpfPlot x:Name="patternGraphPlot" HorizontalAlignment="Center" Height="571" VerticalAlignment="Top" Width="812" Margin="0,2,0,0" />
                 </Grid>
             </TabItem>
             <TabItem Header="Simulator">
