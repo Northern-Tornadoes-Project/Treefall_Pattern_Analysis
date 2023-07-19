@@ -126,7 +126,7 @@ namespace TreefallPatternAnalysis
 
                 pattern.RemoveAt(d1 > d2 ? i - 1 : i);
 
-                //System.Diagnostics.Debug.WriteLine("***REMOVED***");
+                //System.Diagnostics.Debug.WriteLine("************** " + centerVec[0] + ", " + centerVec[1]);
                 
                 break;
             }

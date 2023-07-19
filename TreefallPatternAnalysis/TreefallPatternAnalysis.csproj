@@ -19,8 +19,10 @@
     <Content Include="DarkImages\AddInDesktop32.png" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
     <PackageReference Include="ScottPlot" Version="4.1.63" />
     <PackageReference Include="ScottPlot.WPF" Version="4.1.63" />
+    <PackageReference Include="Syncfusion.DataGridExcelExport.Wpf" Version="22.1.39" />
     <PackageReference Include="TogglSwitch" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>

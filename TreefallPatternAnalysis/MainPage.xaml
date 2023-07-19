@@ -28,7 +28,7 @@
                     <Label Content="Select Treefall Vectors" FontSize="20" HorizontalAlignment="Center" Margin="0,144,0,0" VerticalAlignment="Top" Width="300"/>
                     <Label Content="Select Convergence Line" FontSize="20" HorizontalAlignment="Center" Margin="0,266,0,0" VerticalAlignment="Top" Width="300"/>
                     <Label Content="Auto Generate Convergence Line? " FontSize="20" HorizontalAlignment="Left" Margin="487,412,0,0" VerticalAlignment="Top" Width="310"/>
-                    <CheckBox Content="" HorizontalAlignment="Left" Margin="810,416,0,0" VerticalAlignment="Top" Height="15" Width="18" RenderTransformOrigin="0.391,-0.103">
+                    <CheckBox IsEnabled="False" Content="" HorizontalAlignment="Left" Margin="810,416,0,0" VerticalAlignment="Top" Height="15" Width="18" RenderTransformOrigin="0.391,-0.103">
                         <CheckBox.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform ScaleX="2" ScaleY="2"/>
@@ -173,12 +173,19 @@
             </TabItem>
             <TabItem Header="Model and Parameters">
                 <Grid Background="#FFE5E5E5" Margin="-2,0,2,0">
-                    <ListBox x:Name="modelTypeListView" ScrollViewer.VerticalScrollBarVisibility="Visible" Width="200" Margin="2,32,1072,0" SelectedIndex="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="153*"/>
+                        <ColumnDefinition Width="1121*"/>
+                    </Grid.ColumnDefinitions>
+                    <ListBox x:Name="modelTypeListView" ScrollViewer.VerticalScrollBarVisibility="Visible" Width="200" Margin="2,32,1072,0" SelectedIndex="0" Grid.ColumnSpan="2">
                         <ListBoxItem Content="Modified Rankine" FontSize="20" Padding="10" Margin="0,10,0,0" BorderBrush="Black"/>
                         <ListBoxItem Content="Baker-Sterling" FontSize="20"  Padding="10" Margin="0,10,0,0" BorderBrush="Black"/>
+                        <ListBoxItem Content="Burgers-Rott (Axi)" FontSize="20"  Padding="10" Margin="0,10,0,0" BorderBrush="Black"/>
+                        <ListBoxItem Content="Sullivan (Axi)" FontSize="20"  Padding="10" Margin="0,10,0,0" BorderBrush="Black"/>
+                        <ListBoxItem Content="Burgers-Rott (RR)" FontSize="20"  Padding="10" Margin="0,10,0,0" BorderBrush="Black"/>
                     </ListBox>
-                    <Label Content="Vortex Model Parameter Ranges" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Height="45" Margin="222,10,0,0" VerticalAlignment="Top" Width="315"/>
-                    <Rectangle HorizontalAlignment="Left" Height="675" Margin="200,0,0,0" StrokeThickness="1" Stroke="Black" VerticalAlignment="Center" Width="2" RenderTransformOrigin="0.5,0.5">
+                    <Label Content="Vortex Model Parameter Ranges" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Height="45" Margin="69,10,0,0" VerticalAlignment="Top" Width="315" Grid.Column="1"/>
+                    <Rectangle HorizontalAlignment="Left" Height="675" Margin="47,0,0,0" StrokeThickness="1" Stroke="Black" VerticalAlignment="Center" Width="2" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
                         <Rectangle.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform ScaleX="1"/>
@@ -188,7 +195,7 @@
                             </TransformGroup>
                         </Rectangle.RenderTransform>
                     </Rectangle>
-                    <Rectangle HorizontalAlignment="Left" Height="2" Margin="201,363,0,0" StrokeThickness="1" Stroke="Black" VerticalAlignment="Top" Width="1073" RenderTransformOrigin="0.5,0.5">
+                    <Rectangle HorizontalAlignment="Left" Height="2" Margin="48,363,0,0" StrokeThickness="1" Stroke="Black" VerticalAlignment="Top" Width="1073" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
                         <Rectangle.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform ScaleX="1" ScaleY="1"/>
@@ -198,7 +205,7 @@
                             </TransformGroup>
                         </Rectangle.RenderTransform>
                     </Rectangle>
-                    <Rectangle HorizontalAlignment="Left" Height="313" Margin="738,363,0,0" StrokeThickness="1" Stroke="Black" VerticalAlignment="Top" Width="2" RenderTransformOrigin="0.5,0.5">
+                    <Rectangle HorizontalAlignment="Left" Height="313" Margin="585,363,0,0" StrokeThickness="1" Stroke="Black" VerticalAlignment="Top" Width="2" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
                         <Rectangle.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform ScaleX="1"/>
@@ -208,97 +215,98 @@
                             </TransformGroup>
                         </Rectangle.RenderTransform>
                     </Rectangle>
-                    <Label Content="Transect Variation Parameters" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Height="45" Margin="207,370,0,0" VerticalAlignment="Top" Width="315"/>
-                    <Label Content="Error Function" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Height="45" Margin="816,370,0,0" VerticalAlignment="Top" Width="149"/>
-                    <Label Content="Weighting" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Height="45" Margin="1104,370,0,0" VerticalAlignment="Top" Width="110"/>
-                    <Button Click="runPatternMatching" Content="Run" FontSize="16" HorizontalAlignment="Left" Height="29" Margin="1184,637,0,0" VerticalAlignment="Top" Width="80"/>
-                    <Label Content="Vortex Models" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="37" Margin="32,1,0,0" VerticalAlignment="Top" Width="122"/>
-                    <Label Content="Vt" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="350,100,0,0" VerticalAlignment="Top" Width="30"/>
-                    <Label Content="Vr" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="475,100,0,0" VerticalAlignment="Top" Width="30"/>
-                    <Label Content="Vs" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="600,100,0,0" VerticalAlignment="Top" Width="30"/>
-                    <Label Content="Vc" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="725,100,0,0" VerticalAlignment="Top" Width="30"/>
-                    <Label Content="Rmax" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="838,100,0,0" VerticalAlignment="Top" Width="52"/>
-                    <Label Content="Phi" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="963,100,0,0" VerticalAlignment="Top" Width="52"/>
-                    <Label Content="Min" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="250,150,0,0" VerticalAlignment="Top" Width="40"/>
-                    <Label Content="Max" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="250,225,0,0" VerticalAlignment="Top" Width="49"/>
-                    <Label Content="Step" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="250,300,0,0" VerticalAlignment="Top" Width="49"/>
-                    <TextBox x:Name="vtmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="338,154,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="vtmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="338,229,0,0" TextWrapping="Wrap" Text="80" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="vtstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="338,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="vrstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="463,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="vrmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="463,229,0,0" TextWrapping="Wrap" Text="80" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="vrmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="463,154,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="vsmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="588,154,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="vsmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="588,229,0,0" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="vsstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="588,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="vcstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="713,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="vcmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="713,229,0,0" TextWrapping="Wrap" Text="60" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="vcmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="713,154,0,0" TextWrapping="Wrap" Text="35" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="rmaxmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="838,154,0,0" TextWrapping="Wrap" Text="80" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="rmaxmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="838,229,0,0" TextWrapping="Wrap" Text="400" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="rmaxstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="838,304,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="phimin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="963,154,0,0" TextWrapping="Wrap" Text="0.65" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="phimax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="963,229,0,0" TextWrapping="Wrap" Text="1.35" VerticalAlignment="Top" Width="54"/>
-                    <TextBox x:Name="phistep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="963,304,0,0" TextWrapping="Wrap" Text="0.05" VerticalAlignment="Top" Width="54"/>
-                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="392,150,0,0" VerticalAlignment="Top" Width="40"/>
-                    <ListBox x:Name="errorTypeListView" HorizontalAlignment="Left" Height="187" Margin="791,417,0,0" VerticalAlignment="Top" Width="199" SelectedIndex="0">
+                    <Label Content="Transect Variation Parameters" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Height="45" Margin="54,370,0,0" VerticalAlignment="Top" Width="315" Grid.Column="1"/>
+                    <Label Content="Error Function" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Height="45" Margin="663,370,0,0" VerticalAlignment="Top" Width="149" Grid.Column="1"/>
+                    <Label Content="Weighting" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Height="45" Margin="951,370,0,0" VerticalAlignment="Top" Width="110" Grid.Column="1"/>
+                    <Button Click="runAllPatternMatching" Content="Run All" FontSize="16" HorizontalAlignment="Left" Height="29" Margin="1031,637,0,0" VerticalAlignment="Top" Width="80" Grid.Column="1"/>
+                    <Button Click="runPatternMatching" Content="Run" FontSize="16" HorizontalAlignment="Left" Height="29" Margin="936,637,0,0" VerticalAlignment="Top" Width="80" Grid.Column="1"/>
+                    <Label Content="Vortex Models" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="37" Margin="32,1,0,0" VerticalAlignment="Top" Width="122" Grid.ColumnSpan="2"/>
+                    <Label Content="Vt" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="197,100,0,0" VerticalAlignment="Top" Width="30" Grid.Column="1"/>
+                    <Label Content="Vr" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="322,100,0,0" VerticalAlignment="Top" Width="30" Grid.Column="1"/>
+                    <Label Content="Vs" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="447,100,0,0" VerticalAlignment="Top" Width="30" Grid.Column="1"/>
+                    <Label Content="Vc" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="572,100,0,0" VerticalAlignment="Top" Width="30" Grid.Column="1"/>
+                    <Label Content="Rmax" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="685,100,0,0" VerticalAlignment="Top" Width="52" Grid.Column="1"/>
+                    <Label Content="Phi" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="810,100,0,0" VerticalAlignment="Top" Width="52" Grid.Column="1"/>
+                    <Label Content="Min" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="97,150,0,0" VerticalAlignment="Top" Width="40" Grid.Column="1"/>
+                    <Label Content="Max" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="97,225,0,0" VerticalAlignment="Top" Width="49" Grid.Column="1"/>
+                    <Label Content="Step" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="97,300,0,0" VerticalAlignment="Top" Width="49" Grid.Column="1"/>
+                    <TextBox x:Name="vtmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="185,154,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vtmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="185,229,0,0" TextWrapping="Wrap" Text="50" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vtstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="185,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vrstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="310,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vrmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="310,229,0,0" TextWrapping="Wrap" Text="80" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vrmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="310,154,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vsmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="435,154,0,0" TextWrapping="Wrap" Text="15" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vsmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="435,229,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vsstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="435,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vcstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="560,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vcmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="560,229,0,0" TextWrapping="Wrap" Text="50" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vcmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="560,154,0,0" TextWrapping="Wrap" Text="45" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="rmaxmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="685,154,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="rmaxmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="685,229,0,0" TextWrapping="Wrap" Text="300" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="rmaxstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="685,304,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="phimin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="810,154,0,0" TextWrapping="Wrap" Text="0.65" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="phimax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="810,229,0,0" TextWrapping="Wrap" Text="1.35" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="phistep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="810,304,0,0" TextWrapping="Wrap" Text="0.05" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="239,150,0,0" VerticalAlignment="Top" Width="40" Grid.Column="1"/>
+                    <ListBox x:Name="errorTypeListView" HorizontalAlignment="Left" Height="187" Margin="638,417,0,0" VerticalAlignment="Top" Width="199" SelectedIndex="0" Grid.Column="1">
                         <ListBoxItem Content="Dot Product" FontSize="18" Padding="5" BorderBrush="Black"/>
                         <ListBoxItem Content="Angle Difference" FontSize="18" Padding="5" Margin="0,10,0,0" BorderBrush="Black"/>
                         <ListBoxItem Content="Cord Length" FontSize="18" Padding="5" Margin="0,10,0,0" BorderBrush="Black"/>
                         <ListBoxItem Content="Sum Magnitude" FontSize="18" Padding="5" Margin="0,10,0,0" BorderBrush="Black"/>
                     </ListBox>
-                    <ListBox x:Name="weightTypeListView" HorizontalAlignment="Left" Height="189" Margin="1060,415,0,0" VerticalAlignment="Top" Width="198" SelectedIndex="0">
+                    <ListBox x:Name="weightTypeListView" HorizontalAlignment="Left" Height="189" Margin="907,415,0,0" VerticalAlignment="Top" Width="198" SelectedIndex="0" Grid.Column="1">
                         <ListBoxItem Content="Constant" FontSize="18" Padding="5" BorderBrush="Black"/>
                         <ListBoxItem Content="Inverse Distance" FontSize="18" Padding="5" Margin="0,10,0,0" BorderBrush="Black"/>
                         <ListBoxItem Content="Independent Inv Dist" FontSize="18" Padding="5" Margin="0,10,0,0" BorderBrush="Black"/>
                     </ListBox>
-                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="392,225,0,0" VerticalAlignment="Top" Width="40"/>
-                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="392,300,0,0" VerticalAlignment="Top" Width="40"/>
-                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="517,300,0,0" VerticalAlignment="Top" Width="40"/>
-                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="517,225,0,0" VerticalAlignment="Top" Width="40"/>
-                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="517,150,0,0" VerticalAlignment="Top" Width="40"/>
-                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="642,150,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783"/>
-                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="642,225,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783"/>
-                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="642,300,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783"/>
-                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="767,300,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783"/>
-                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="767,225,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783"/>
-                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="767,150,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783"/>
-                    <Label Content="m" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="892,150,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783"/>
-                    <Label Content="m" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="892,225,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783"/>
-                    <Label Content="m" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="892,300,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783"/>
-                    <Label ToolTip="The allowed difference in length of the transect above/below the convergence line in number of vectors" Content="Allowed Length Difference" FontSize="16" HorizontalAlignment="Left" Height="47" Margin="222,420,0,0" VerticalAlignment="Top" Width="268"/>
-                    <Label ToolTip="The max allowed difference in length of the transect in number of vectors" Content="Max Length Difference" FontSize="16" HorizontalAlignment="Left" Height="47" Margin="222,462,0,0" VerticalAlignment="Top" Width="268"/>
-                    <Label ToolTip="The variation of transect width from original, (min, max, step)" Content="Width Variation" FontSize="16" HorizontalAlignment="Left" Height="47" Margin="222,509,0,0" VerticalAlignment="Top" Width="268"/>
-                    <Label ToolTip="The variation of transect convergence height from original, (min, max, step)" Content="Convergence Height Variation" FontSize="16" HorizontalAlignment="Left" Height="47" Margin="222,556,0,0" VerticalAlignment="Top" Width="268"/>
-                    <Label ToolTip="The variation of transect convergence angle from original, (min, max, step)" Content="Convergence Angle Variation" FontSize="16" HorizontalAlignment="Left" Height="47" Margin="222,603,0,0" VerticalAlignment="Top" Width="268"/>
-                    <TextBox x:Name="allowedLengthDifference" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="537,426,0,0" TextWrapping="Wrap" Text="2" VerticalAlignment="Top" Width="50"/>
-                    <TextBox x:Name="maxLengthDifference" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="537,468,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="50"/>
-                    <TextBox PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="463,514,0,0" TextWrapping="Wrap" Text="0.8" VerticalAlignment="Top" Width="50"/>
-                    <TextBox PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="537,514,0,0" TextWrapping="Wrap" Text="1.5" VerticalAlignment="Top" Width="50"/>
-                    <TextBox PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Center" Height="24" Margin="0,514,0,0" TextWrapping="Wrap" Text="0.1" VerticalAlignment="Top" Width="50"/>
-                    <TextBox PreviewTextInput="NegativeNumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="463,561,0,0" TextWrapping="Wrap" Text="-5" VerticalAlignment="Top" Width="50"/>
-                    <TextBox PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="537,561,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="50"/>
-                    <TextBox PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Center" Height="24" Margin="0,561,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="50"/>
-                    <TextBox PreviewTextInput="NegativeNumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="463,608,0,0" TextWrapping="Wrap" Text="-3" VerticalAlignment="Top" Width="50"/>
-                    <TextBox PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="537,608,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="50"/>
-                    <TextBox PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Center" Height="24" Margin="0,608,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="50"/>
-                    <Label Content="-" FontSize="32" HorizontalAlignment="Left" Height="41" Margin="513,497,0,0" VerticalAlignment="Top" Width="32"/>
-                    <Label Content="-" FontSize="32" HorizontalAlignment="Left" Height="41" Margin="588,497,0,0" VerticalAlignment="Top" Width="32"/>
-                    <Label Content="-" FontSize="32" HorizontalAlignment="Left" Height="41" Margin="587,544,0,0" VerticalAlignment="Top" Width="32"/>
-                    <Label Content="-" FontSize="32" HorizontalAlignment="Left" Height="41" Margin="513,545,0,0" VerticalAlignment="Top" Width="32"/>
-                    <Label Content="-" FontSize="32" HorizontalAlignment="Left" Height="41" Margin="513,592,0,0" VerticalAlignment="Top" Width="32"/>
-                    <Label Content="-" FontSize="32" HorizontalAlignment="Left" Height="41" Margin="587,591,0,0" VerticalAlignment="Top" Width="32"/>
-                    <Label Content="Vectors" HorizontalAlignment="Left" Height="24" Margin="600,426,0,0" VerticalAlignment="Top" Width="62"/>
-                    <Label Content="Vectors" HorizontalAlignment="Left" Height="24" Margin="600,468,0,0" VerticalAlignment="Top" Width="62"/>
-                    <Label Content="X" HorizontalAlignment="Left" Height="24" Margin="667,513,0,0" VerticalAlignment="Top" Width="62"/>
-                    <Label Content="m" HorizontalAlignment="Left" Height="24" Margin="667,560,0,0" VerticalAlignment="Top" Width="62"/>
-                    <Label Content="°" FontSize="20" HorizontalAlignment="Left" Height="24" Margin="667,601,0,0" VerticalAlignment="Top" Width="62"/>
+                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="239,225,0,0" VerticalAlignment="Top" Width="40" Grid.Column="1"/>
+                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="239,300,0,0" VerticalAlignment="Top" Width="40" Grid.Column="1"/>
+                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="364,300,0,0" VerticalAlignment="Top" Width="40" Grid.Column="1"/>
+                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="364,225,0,0" VerticalAlignment="Top" Width="40" Grid.Column="1"/>
+                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="364,150,0,0" VerticalAlignment="Top" Width="40" Grid.Column="1"/>
+                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="489,150,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783" Grid.Column="1"/>
+                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="489,225,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783" Grid.Column="1"/>
+                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="489,300,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783" Grid.Column="1"/>
+                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="614,300,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783" Grid.Column="1"/>
+                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="614,225,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783" Grid.Column="1"/>
+                    <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="614,150,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783" Grid.Column="1"/>
+                    <Label Content="m" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="739,150,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783" Grid.Column="1"/>
+                    <Label Content="m" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="739,225,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783" Grid.Column="1"/>
+                    <Label Content="m" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="739,300,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="1.607,-0.783" Grid.Column="1"/>
+                    <Label ToolTip="The allowed difference in length of the transect above/below the convergence line in number of vectors" Content="Allowed Length Difference" FontSize="16" HorizontalAlignment="Left" Height="47" Margin="69,420,0,0" VerticalAlignment="Top" Width="268" Grid.Column="1"/>
+                    <Label ToolTip="The max allowed difference in length of the transect in number of vectors" Content="Max Length Difference" FontSize="16" HorizontalAlignment="Left" Height="47" Margin="69,462,0,0" VerticalAlignment="Top" Width="268" Grid.Column="1"/>
+                    <Label ToolTip="The variation of transect width from original, (min, max, step)" Content="Width Variation" FontSize="16" HorizontalAlignment="Left" Height="47" Margin="69,509,0,0" VerticalAlignment="Top" Width="268" Grid.Column="1"/>
+                    <Label ToolTip="The variation of transect convergence height from original, (min, max, step)" Content="Convergence Height Variation" FontSize="16" HorizontalAlignment="Left" Height="47" Margin="69,556,0,0" VerticalAlignment="Top" Width="268" Grid.Column="1"/>
+                    <Label ToolTip="The variation of transect convergence angle from original, (min, max, step)" Content="Convergence Angle Variation" FontSize="16" HorizontalAlignment="Left" Height="47" Margin="69,603,0,0" VerticalAlignment="Top" Width="268" Grid.Column="1"/>
+                    <TextBox x:Name="allowedLengthDifference" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="384,426,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="50" Grid.Column="1"/>
+                    <TextBox x:Name="maxLengthDifference" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="384,468,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="50" Grid.Column="1"/>
+                    <TextBox IsEnabled="False" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="310,514,0,0" TextWrapping="Wrap" Text="0.8" VerticalAlignment="Top" Width="50" Grid.Column="1"/>
+                    <TextBox IsEnabled="False" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="384,514,0,0" TextWrapping="Wrap" Text="1.5" VerticalAlignment="Top" Width="50" Grid.Column="1"/>
+                    <TextBox IsEnabled="False" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="459,514,0,0" TextWrapping="Wrap" Text="0.1" VerticalAlignment="Top" Width="50" Grid.Column="1"/>
+                    <TextBox IsEnabled="False" PreviewTextInput="NegativeNumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="310,561,0,0" TextWrapping="Wrap" Text="-5" VerticalAlignment="Top" Width="50" Grid.Column="1"/>
+                    <TextBox IsEnabled="False" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="384,561,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="50" Grid.Column="1"/>
+                    <TextBox IsEnabled="False" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="459,561,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="50" Grid.Column="1"/>
+                    <TextBox IsEnabled="False" PreviewTextInput="NegativeNumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="310,608,0,0" TextWrapping="Wrap" Text="-3" VerticalAlignment="Top" Width="50" Grid.Column="1"/>
+                    <TextBox IsEnabled="False" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="384,608,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="50" Grid.Column="1"/>
+                    <TextBox IsEnabled="False" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" FontSize="16" HorizontalAlignment="Left" Height="24" Margin="459,608,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="50" Grid.Column="1"/>
+                    <Label Content="-" FontSize="32" HorizontalAlignment="Left" Height="41" Margin="360,497,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1"/>
+                    <Label Content="-" FontSize="32" HorizontalAlignment="Left" Height="41" Margin="435,497,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1"/>
+                    <Label Content="-" FontSize="32" HorizontalAlignment="Left" Height="41" Margin="434,544,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1"/>
+                    <Label Content="-" FontSize="32" HorizontalAlignment="Left" Height="41" Margin="360,545,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1"/>
+                    <Label Content="-" FontSize="32" HorizontalAlignment="Left" Height="41" Margin="360,592,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1"/>
+                    <Label Content="-" FontSize="32" HorizontalAlignment="Left" Height="41" Margin="434,591,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1"/>
+                    <Label Content="Vectors" HorizontalAlignment="Left" Height="24" Margin="447,426,0,0" VerticalAlignment="Top" Width="62" Grid.Column="1"/>
+                    <Label Content="Vectors" HorizontalAlignment="Left" Height="24" Margin="447,468,0,0" VerticalAlignment="Top" Width="62" Grid.Column="1"/>
+                    <Label Content="X" HorizontalAlignment="Left" Height="24" Margin="514,513,0,0" VerticalAlignment="Top" Width="62" Grid.Column="1"/>
+                    <Label Content="m" HorizontalAlignment="Left" Height="24" Margin="514,560,0,0" VerticalAlignment="Top" Width="62" Grid.Column="1"/>
+                    <Label Content="°" FontSize="20" HorizontalAlignment="Left" Height="24" Margin="514,601,0,0" VerticalAlignment="Top" Width="62" Grid.Column="1"/>
 
 
 
                 </Grid>
             </TabItem>
-            <TabItem Header="Results">
+            <TabItem Header="Single Result">
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="3*"/>
@@ -317,6 +325,17 @@
                     <Button Content="Export Selected" HorizontalAlignment="Left" Height="35" Margin="100,635,0,0" VerticalAlignment="Top" Width="105"/>
                     <Button Content="Export All" HorizontalAlignment="Left" Height="35" Margin="0,635,0,0" VerticalAlignment="Top" Width="105" Grid.Column="1"/>
                     <Button Content="Next" FontSize="16" HorizontalAlignment="Left" Height="27" Margin="909,639,0,0" VerticalAlignment="Top" Width="82" Grid.Column="1"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Full Results">
+                <Grid>
+                    <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="10,0,300,0">
+                        <StackPanel x:Name="fullResultPanel"></StackPanel>
+                    </ScrollViewer>
+                    <Button Content="Export Selected" HorizontalAlignment="Left" Height="35" Margin="1003,617,0,0" VerticalAlignment="Top" Width="105"/>
+                    <Button Content="Export All" HorizontalAlignment="Left" Height="35" Margin="1145,617,0,0" VerticalAlignment="Top" Width="105" RenderTransformOrigin="0.505,1.758" Click="ExportAll"/>
+                    <WpfPlot MouseDown="rescaleMatchedPatternPlot" x:Name="fullMatchedPatternPlot" HorizontalAlignment="Left" Height="434" Margin="1037,103,0,0" VerticalAlignment="Top" Width="162"/>
+                    <Label Content="Pattern" FontWeight="Bold" FontSize="16" HorizontalAlignment="Left" Height="34" Margin="1078,64,0,0" VerticalAlignment="Top" Width="140"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Manual Matching">

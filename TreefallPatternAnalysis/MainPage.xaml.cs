@@ -30,6 +30,13 @@ using System.Runtime.InteropServices;
 using ActiproSoftware.Products.Ribbon;
 using System.Threading;
 using System.Text.RegularExpressions;
+using Syncfusion.XlsIO.Implementation;
+using System.Data;
+using System.Reflection;
+using System.Windows.Automation;
+using System.IO;
+using ArcGIS.Core.Data.UtilityNetwork.Trace;
+using Syncfusion.Data.Extensions;
 
 namespace TreefallPatternAnalysis
 {
@@ -268,14 +275,14 @@ namespace TreefallPatternAnalysis
             if (e == null || e.MiddleButton == MouseButtonState.Pressed)
             {
                 var plt = (WpfPlot)sender;
-                double spacing = lastRunSpacing;
+               double spacing = lastRunSpacing;
 
-                int idx = resultTransectsList.SelectedIndex;
+/*                int idx = resultTransectsList.SelectedIndex;
 
                 if (idx < 0)
                 {
                     return;
-                }
+                }*/
 
                 //plt.Plot.XAxis.Ticks(false);
 
@@ -294,8 +301,10 @@ namespace TreefallPatternAnalysis
                 var w = plt.Plot.Width;
                 var h = plt.Plot.Height;
 
-                var dx = Math.Abs(a.YMax - a.YMin) * 0.1;
-                plt.Plot.SetAxisLimitsX(-dx, dx);
+                var dx = Math.Abs(a.YMax - a.YMin) * 0.22;
+
+                plt.Plot.SetAxisLimitsY(a.YMin + spacing, a.YMax + spacing);
+                plt.Plot.SetAxisLimitsX(-dx/2, dx/2);
 
             }
         }
@@ -485,8 +494,12 @@ namespace TreefallPatternAnalysis
             if (idx < 0) return;
 
             transectCreationList.Items.RemoveAt(idx);
-            resultTransectsList.Items.RemoveAt(idx);
 
+            if(idx < resultTransectsList.Items.Count)
+            {
+                resultTransectsList.Items.RemoveAt(idx);
+            }
+            
             transects.RemoveAt(idx);
 
             reDrawTransectOverview();
@@ -1080,7 +1093,7 @@ namespace TreefallPatternAnalysis
             matchInfoListBox.Items.Add("Phi: " + Math.Round(match[6], 2).ToString());
             matchInfoListBox.Items.Add("Vmax: " + match[7].ToString());
 
-            centerIdx = (int)Math.Ceiling(transects[tIdx].lengthBelow / lastRunSpacing);
+            centerIdx = (int)Math.Ceiling(transects[tIdx].lengthAbove / lastRunSpacing);
 
 
             int modelType = modelTypeListView.SelectedIndex > 0 ? modelTypeListView.SelectedIndex : 0;
@@ -1154,5 +1167,253 @@ namespace TreefallPatternAnalysis
             rescaleMatchedPatternPlot(manualMatchPatternPlot, null);
             manualMatchPatternPlot.Refresh();
         }
+
+        private async void runAllPatternMatching(object sender, RoutedEventArgs e)
+        {
+            fullResultPanel.Children.Clear();
+
+            Window loadingBarWindow = new Window();
+            loadingBarWindow.Title = "Matching Patterns";
+            loadingBarWindow.Height = 200;
+            loadingBarWindow.Width = 500;
+
+            loadingBarWindow.Show();
+
+            ProgressBar pb = new ProgressBar();
+            ProgressBar pbm = new ProgressBar();
+
+            //pb.Name = "pbStatus";
+            pb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            pb.Minimum = 0;
+            pb.Maximum = transects.Count;
+            pb.Value = 0;
+            pb.Width = 400;
+            pb.Height = 30;
+            pb.Margin = new Thickness(30);
+
+            pbm.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
+            pbm.Minimum = 0;
+            pbm.Maximum = modelTypeListView.Items.Count;
+            pbm.Value = 0;
+            pbm.Width = 400;
+            pbm.Height = 30;
+            pbm.Margin = new Thickness(30);
+
+            TextBlock tb = new TextBlock();
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            tb.FontWeight = FontWeights.Bold;
+            tb.Margin = new Thickness(37);
+
+            TextBlock tbm = new TextBlock();
+            tbm.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            tbm.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
+            tbm.FontWeight = FontWeights.Bold;
+            tbm.Margin = new Thickness(37);
+
+            Binding b = new Binding();
+            b.Source = pb;
+            b.Path = new PropertyPath("Value");
+            b.StringFormat = "{0}/" + transects.Count.ToString();
+
+            Binding bm = new Binding();
+            bm.Source = pbm;
+            bm.Path = new PropertyPath("Value");
+            bm.StringFormat = "{0}/" + modelTypeListView.Items.Count.ToString();
+
+            tb.SetBinding(TextBlock.TextProperty, b);
+            tbm.SetBinding(TextBlock.TextProperty, bm);
+
+            Grid g = new Grid();
+            g.Children.Add(pb);
+            g.Children.Add(tb);
+            g.Children.Add(pbm);
+            g.Children.Add(tbm);
+
+            loadingBarWindow.Content = g;
+
+            double spacing = (int)Math.Floor(double.Parse(vectorSpacing.Text, CultureInfo.InvariantCulture));
+            lastRunSpacing = spacing;
+
+            //int modelType = modelTypeListView.SelectedIndex > 0 ? modelTypeListView.SelectedIndex : 0;
+            int compareType = errorTypeListView.SelectedIndex > 0 ? errorTypeListView.SelectedIndex : 0;
+            int weightType = weightTypeListView.SelectedIndex > 0 ? weightTypeListView.SelectedIndex : 0;
+
+            
+
+            for (int i = 0; i < transects.Count; i++)
+            {
+                double[] modelParams = getModelParameters();
+                double minVelSum = 0.0;
+                double bestErrorSum = 0.0;
+                List<MatchingResult> results = new List<MatchingResult>();
+
+                for (int j = 0; j < modelTypeListView.Items.Count; j++)
+                {
+                    List<double[]> matches = new List<double[]>();
+                    await QueuedTask.Run(() =>
+                    {
+                        matches = PatternSolver.solveBestMatches(transects[i].patternVecs, modelParams, j, compareType, weightType, spacing,
+                                                                     Math.Ceiling(transects[i].lengthAbove / spacing) * spacing,
+                                                                     Math.Ceiling(transects[i].lengthBelow / spacing) * spacing);
+                    });
+
+                    if (matches.Count > 0)
+                    {
+                        double[] minMatch = matches.MinBy(x => x[7]);
+                        double bestError = Math.Round(matches[0][0], 5);
+
+                        double minVel = Math.Round(minMatch[7]);
+                        double error = (1 - bestError);
+                        error *= error;
+                        minVelSum += minMatch[7] * error;
+                        bestErrorSum += error;
+
+                        string bestParams = string.Format("{0}, {1}, {2}, {3}, {4}, {5}", matches[0][2], matches[0][1], matches[0][3], matches[0][4], matches[0][5], Math.Round(matches[0][6], 2));
+                        string minParams = string.Format("{0}, {1}, {2}, {3}, {4}, {5}", minMatch[2], minMatch[1], minMatch[3], minMatch[4], minMatch[5], Math.Round(minMatch[6], 2));
+
+                        results.Add(new MatchingResult(((ListBoxItem)modelTypeListView.Items[j]).Content.ToString(), minVel + " m/s", bestError, bestParams, minParams));
+                    }
+                    else
+                    {
+                        results.Add(new MatchingResult(((ListBoxItem)modelTypeListView.Items[j]).Content.ToString(), "N/A", 0, "x", "x"));
+                    }
+
+                    if(j == 0)
+                    {
+                        modelParams[15] = 1.0; 
+                        modelParams[16] = 1.0;
+                    }
+
+                    pbm.Value++;
+                }
+
+                Label label = new Label();
+                label.Content = "Transect #" + (i + 1);
+                label.Padding = new Thickness(0, 10, 0, 10);
+                label.FontWeight = FontWeights.Bold;
+                fullResultPanel.Children.Add(label);
+
+                results.Add(new MatchingResult("Weighted Average", Math.Round(minVelSum / bestErrorSum) + " m/s", Double.NaN, "x", "x"));
+
+                DataGrid dg = new DataGrid();
+                dg.ItemsSource = new List<MatchingResult>(results);
+
+                dg.ColumnWidth = new DataGridLength(1, DataGridLengthUnitType.Star);
+                dg.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
+                dg.MouseLeftButtonUp += matchSelected;
+                fullResultPanel.Children.Add(dg);
+
+                pbm.Value = 0;
+                pb.Value++;
+            }
+
+            loadingBarWindow.Close();
+
+            headerTabs.SelectedIndex = 4;
+        }
+
+        private void matchSelected(object sender, MouseButtonEventArgs e)
+        {
+            DataGrid dg = sender as DataGrid;
+
+            int tIdx = fullResultPanel.Children.IndexOf(dg) / 2;
+
+            MatchingResult mr = dg.SelectedItem as MatchingResult;
+
+            if (mr == null) return;
+
+            int modelType = -1;
+            
+            for(int i = 0; i < modelTypeListView.Items.Count; i++)
+            {
+                if (((ListBoxItem)modelTypeListView.Items[i]).Content.ToString() == mr.Model)
+                {
+                    modelType = i;
+                }
+            }
+
+            if (modelType < 0) return;
+            
+            string[] matchParams = mr.BestParams.Split(", ");
+            double[] match = new double[matchParams.Length];
+
+            for (int i = 0; i < matchParams.Length; i++)
+            {
+                try
+                {
+                    match[i] = double.Parse(matchParams[i], CultureInfo.InvariantCulture);
+                }
+                catch(Exception ex)
+                {
+                    return;
+                }
+            }
+
+            centerIdx = (int)Math.Ceiling(transects[tIdx].lengthAbove / lastRunSpacing);
+
+            var bestMatch = PatternSolver.getPattern(new double[] { match[1], match[0], match[2], match[3], match[4], match[5] }, modelType, lastRunSpacing, new double[] { transects[tIdx].patternVecs[centerIdx * 2], transects[tIdx].patternVecs[centerIdx * 2 + 1] });
+
+            fullMatchedPatternPlot.Plot.Clear();
+
+            var patternField = fullMatchedPatternPlot.Plot.AddVectorFieldList();
+            //patternField.Color = System.Drawing.Color.DarkRed;
+            patternField.ArrowStyle.ScaledArrowheads = true;
+
+            double above = Math.Ceiling(transects[tIdx].lengthAbove / lastRunSpacing) * lastRunSpacing;
+
+            for (int i = 0; i < transects[tIdx].patternVecs.Count() / 2; i++)
+            {
+                patternField.RootedVectors.Add((new Coordinate(0, above - i * lastRunSpacing), new CoordinateVector(transects[tIdx].patternVecs[i * 2] * lastRunSpacing, transects[tIdx].patternVecs[i * 2 + 1] * lastRunSpacing)));
+            }
+
+            var matchedPatternField = fullMatchedPatternPlot.Plot.AddVectorFieldList();
+            matchedPatternField.Color = System.Drawing.Color.DarkRed;
+            matchedPatternField.ArrowStyle.ScaledArrowheads = true;
+
+            foreach (double[] v in bestMatch)
+            {
+                matchedPatternField.RootedVectors.Add((new Coordinate(0, v[1]), new CoordinateVector(v[2] * lastRunSpacing, v[3] * lastRunSpacing)));
+            }
+
+            rescaleMatchedPatternPlot(fullMatchedPatternPlot, null);
+            fullMatchedPatternPlot.Refresh();
+        }
+
+        private void ExportAll(object sender, RoutedEventArgs e)
+        {
+
+            if (fullResultPanel.Children.IsNullOrEmpty()) return;
+            string csvData = "";
+
+            for(int i = 1; i <  fullResultPanel.Children.Count; i += 2)
+            {
+
+                Transect t = transects[i / 2];
+
+                Label label = fullResultPanel.Children[i - 1] as Label;
+                csvData += label.Content.ToString() + "\n";
+
+                csvData += "X, Y, Width, Length Above, Length Below, Angle, Position Offset, Height Offset, Angle Offset\n";
+
+                var center = t.getCenter();
+                csvData += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n", center.Item1, center.Item2, t.width, t.lengthAbove, t.lengthBelow, t.theta, t.positionOffset, t.heightOffset, t.angleOffset);
+
+                DataGrid dg = fullResultPanel.Children[i] as DataGrid;
+
+                dg.SelectAllCells();
+
+                dg.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
+                ApplicationCommands.Copy.Execute(null, dg);
+
+                dg.UnselectAllCells();
+
+                csvData += (string)System.Windows.Clipboard.GetData(System.Windows.DataFormats.CommaSeparatedValue);
+                csvData += "\n";
+            }
+
+            File.WriteAllText("C:\\Users\\dbutt7\\Desktop\\Alonsa Transect Analysis\\Test.csv", csvData, UnicodeEncoding.UTF8);
+        }
+
     }
 }

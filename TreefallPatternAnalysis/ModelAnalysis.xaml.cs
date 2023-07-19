@@ -234,12 +234,18 @@ namespace TreefallPatternAnalysis
 
             foreach(var p in pattern)
             {
+                //System.Diagnostics.Debug.WriteLine(p[0] + " " + p[1] + " " + p[2] + " " + p[3]);
                 vf.RootedVectors.Add((new Coordinate(p[0], p[1]), new CoordinateVector(p[2]*dx, p[3]*dx)));
             }
 
             patternPlot.Plot.Clear();
+            patternPlot.Plot.Style(ScottPlot.Style.Black);
+            patternPlot.Plot.Grid(false);
+            patternPlot.Plot.YAxis.Ticks(false);
+            patternPlot.Plot.YAxis.Line(false);
+            patternPlot.Plot.YAxis2.Line(false);
             var pvf = patternPlot.Plot.AddVectorFieldList();
-            pvf.Color = System.Drawing.Color.Black;
+            pvf.Color = System.Drawing.Color.White;
             pvf.ArrowStyle.ScaledArrowheads = true;
             pvf.ArrowStyle.ScaledArrowheadLength = 0.4;
 
