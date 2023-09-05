@@ -133,6 +133,7 @@
                             <ListBoxItem Content="Burgers-Rott (Axisym)" FontSize="20"  Padding="10" Margin="0,10,0,0" BorderBrush="Black"/>
                             <ListBoxItem Content="Sullivan (Axisym)" FontSize="20"  Padding="10" Margin="0,10,0,0" BorderBrush="Black"/>
                             <ListBoxItem Content="Burgers-Rott (RR)" FontSize="20"  Padding="10" Margin="0,10,0,0" BorderBrush="Black"/>
+                            <ListBoxItem Content="Sullivan (RR)" FontSize="20"  Padding="10" Margin="0,10,0,0" BorderBrush="Black"/>
                         </ListBox>
                     </Grid>
                 </TabItem>

@@ -36,7 +36,11 @@ using System.Reflection;
 using System.Windows.Automation;
 using System.IO;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
-using Syncfusion.Data.Extensions;
+using Microsoft.Office.Core;
+using ArcGIS.Desktop.Core;
+using Syncfusion.Windows.Shared;
+using ArcGIS.Core.Internal;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace TreefallPatternAnalysis
 {
@@ -190,7 +194,7 @@ namespace TreefallPatternAnalysis
             });
 
             transectPositionSlider.Maximum = convergenceLineDists[convergenceLineDists.Length - 1];
-            transectPositionSlider.TickFrequency = convergenceLineDists[convergenceLineDists.Length - 1] / 10;
+            transectPositionSlider.TickFrequency = convergenceLineDists[convergenceLineDists.Length - 1] / 100;
 
             headerTabs.SelectedIndex = 1;
 
@@ -509,18 +513,24 @@ namespace TreefallPatternAnalysis
         private bool lockSliders = false;
         private async void SliderValueChanged(object sender, RoutedEventArgs e)
         {
-            if (lockSliders) return;
+            //if (lockSliders) return;
+            //lockSliders = true;
 
-            Slider slider;
+            Slider slider = null;
             TextBox tb;
 
             if (sender is Slider)
             {
                 slider = (Slider)sender;
+                slider.IsEnabled = false;
 
                 tb = sliderTextDict.GetValueOrDefault(slider);
 
-                if (tb == null || tb.Text == "" || tb.Text == "-") return;
+                if (tb == null || tb.Text == "" || tb.Text == "-")
+                {
+                    slider.IsEnabled = true;
+                    return;
+                }
 
                 tb.Text = (Math.Round(slider.Value, 2)).ToString();
             }
@@ -545,6 +555,10 @@ namespace TreefallPatternAnalysis
 
             if (transectAngleOffsetSlider == null || transectPositionSlider == null || transectLengthAboveSlider == null || transectLengthBelowSlider == null || transectWidthSlider == null || transectHeightOffsetSlider == null)
             {
+                if(slider != null)
+                {
+                    slider.IsEnabled = true;
+                }
                 return;
             }
 
@@ -556,6 +570,10 @@ namespace TreefallPatternAnalysis
 
             if (idx < 0)
             {
+                if (slider != null)
+                {
+                    slider.IsEnabled = true;
+                }
                 return;
             }
 
@@ -651,7 +669,7 @@ namespace TreefallPatternAnalysis
                     {
                         double middle = (v.Item2 + v.Item4) / 2.0;
 
-                        patternBins[(int)Math.Clamp(Math.Abs(transects[idx].lengthAbove - middle + spacing / 2.0) / spacing, 0, size - 1)].Add((v.Item3 - v.Item1, v.Item4 - v.Item2));
+                        patternBins[(int)Math.Clamp(Math.Abs(Math.Ceiling(transects[idx].lengthAbove / (double)spacing) * (double)spacing - middle + (double)spacing / 2.0) / spacing, 0, size - 1)].Add((v.Item3 - v.Item1, v.Item4 - v.Item2));
                     }
 
                     transects[idx].patternVecs.Clear();
@@ -766,7 +784,11 @@ namespace TreefallPatternAnalysis
 
             transectVectorsPlot.Configuration.MiddleClickAutoAxis = false;
 
-
+            //lockSliders = false;
+            if (slider != null)
+            {
+                slider.IsEnabled = true;
+            }
         }
 
         private void transectSelected(object sender, SelectionChangedEventArgs e)
@@ -1384,35 +1406,210 @@ namespace TreefallPatternAnalysis
         {
 
             if (fullResultPanel.Children.IsNullOrEmpty()) return;
-            string csvData = "";
 
-            for(int i = 1; i <  fullResultPanel.Children.Count; i += 2)
+            System.Windows.Forms.SaveFileDialog saveDialog = new();
+            
+            saveDialog.FileName = Project.Current.Name.Split(".")[0] + "_Transect_Analysis";
+            saveDialog.DefaultExt = ".csv";
+            saveDialog.AddExtension = true;
+            saveDialog.Filter = "CSV |*.csv|Excel |*.xlsx";
+
+            try
             {
+                if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK && saveDialog.FileName.Trim() != "")
+                {
+                    System.Diagnostics.Debug.WriteLine(saveDialog.FileName);
+                    var strParts = saveDialog.FileName.Split(".");
 
-                Transect t = transects[i / 2];
+                    //export as unformatted csv
+                    if (strParts[strParts.Length - 1] == "csv")
+                    {
+                        string csvData = "";
 
-                Label label = fullResultPanel.Children[i - 1] as Label;
-                csvData += label.Content.ToString() + "\n";
+                        for (int i = 1; i < fullResultPanel.Children.Count; i += 2)
+                        {
 
-                csvData += "X, Y, Width, Length Above, Length Below, Angle, Position Offset, Height Offset, Angle Offset\n";
+                            Transect t = transects[i / 2];
 
-                var center = t.getCenter();
-                csvData += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n", center.Item1, center.Item2, t.width, t.lengthAbove, t.lengthBelow, t.theta, t.positionOffset, t.heightOffset, t.angleOffset);
+                            Label label = fullResultPanel.Children[i - 1] as Label;
+                            csvData += label.Content.ToString() + "\n";
 
-                DataGrid dg = fullResultPanel.Children[i] as DataGrid;
+                            csvData += "X, Y, Width, Length Above, Length Below, Angle, Position Offset, Height Offset, Angle Offset\n";
 
-                dg.SelectAllCells();
+                            var center = t.getCenter();
+                            csvData += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n", center.Item1, center.Item2, t.width, t.lengthAbove, t.lengthBelow, t.theta, t.positionOffset, t.heightOffset, t.angleOffset);
 
-                dg.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
-                ApplicationCommands.Copy.Execute(null, dg);
+                            DataGrid dg = fullResultPanel.Children[i] as DataGrid;
 
-                dg.UnselectAllCells();
+                            dg.SelectAllCells();
 
-                csvData += (string)System.Windows.Clipboard.GetData(System.Windows.DataFormats.CommaSeparatedValue);
-                csvData += "\n";
+                            dg.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
+                            ApplicationCommands.Copy.Execute(null, dg);
+
+                            dg.UnselectAllCells();
+
+                            csvData += (string)System.Windows.Clipboard.GetData(System.Windows.DataFormats.CommaSeparatedValue);
+                            csvData += "\n";
+                        }
+                        File.WriteAllText(saveDialog.FileName, csvData, UnicodeEncoding.UTF8);
+                    }
+                    //export as excel spread sheet
+                    else if (strParts[strParts.Length - 1] == "xlsx")
+                    {
+
+                        var excelApp = new Excel.Application();
+                        var workbooks = excelApp.Workbooks;
+                        workbooks.Add();
+                        Excel._Worksheet workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
+
+                        Excel.Style transectHeaderStyle = excelApp.ActiveWorkbook.Styles.Add("THS");
+                        transectHeaderStyle.Font.Size = 14;
+                        transectHeaderStyle.Font.Bold = true;
+                        transectHeaderStyle.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+
+                        Excel.Style headerStyle = excelApp.ActiveWorkbook.Styles.Add("HS");
+                        headerStyle.Font.Size = 12;
+                        headerStyle.Font.Bold = true;
+                        headerStyle.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+
+                        Excel.Style bodyStyle = excelApp.ActiveWorkbook.Styles.Add("BS");
+                        bodyStyle.Font.Size = 12;
+                        bodyStyle.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+
+                        int row = 1;
+
+                        for (int i = 1; i < fullResultPanel.Children.Count; i += 2)
+                        {
+                            int startRow = row;
+
+                            Transect t = transects[i / 2];
+
+                            Label label = fullResultPanel.Children[i - 1] as Label;
+                            workSheet.Cells[row, 1] = label.Content.ToString();
+                            workSheet.Range[workSheet.Cells[row, 1], workSheet.Cells[row, 9]].merge();
+                            workSheet.Range[workSheet.Cells[row, 1], workSheet.Cells[row, 9]].Style = "THS";
+                            workSheet.Range[workSheet.Cells[row, 1], workSheet.Cells[row, 9]].Borders[Excel.XlBordersIndex.xlEdgeBottom].Weight = 4.0;
+                            row++;
+
+                            var center = t.getCenter();
+                            workSheet.Cells[row, 1] = "X";
+                            workSheet.Cells[row, 2] = "Y";
+                            workSheet.Cells[row, 3] = "Width";
+                            workSheet.Cells[row, 4] = "Length Above";
+                            workSheet.Cells[row, 5] = "Length Below";
+                            workSheet.Cells[row, 6] = "Angle";
+                            workSheet.Cells[row, 7] = "Position Offset";
+                            workSheet.Cells[row, 8] = "Height Offset";
+                            workSheet.Cells[row, 9] = "Angle Offset";
+                            workSheet.Range[workSheet.Cells[row, 1], workSheet.Cells[row, 9]].Style = "HS";
+                            workSheet.Range[workSheet.Cells[row, 1], workSheet.Cells[row, 9]].Borders[Excel.XlBordersIndex.xlEdgeBottom].Weight = 2.0;
+                            row++;
+
+                            workSheet.Cells[row, 1] = center.Item1;
+                            workSheet.Cells[row, 2] = center.Item2;
+                            workSheet.Cells[row, 3] = t.width;
+                            workSheet.Cells[row, 4] = t.lengthAbove;
+                            workSheet.Cells[row, 5] = t.lengthBelow;
+                            workSheet.Cells[row, 6] = Math.Round(t.theta, 5);
+                            workSheet.Cells[row, 7] = t.positionOffset;
+                            workSheet.Cells[row, 8] = t.heightOffset;
+                            workSheet.Cells[row, 9] = t.angleOffset;
+                            workSheet.Range[workSheet.Cells[row, 1], workSheet.Cells[row, 9]].Style = "BS";
+                            workSheet.Range[workSheet.Cells[row, 1], workSheet.Cells[row, 9]].Borders[Excel.XlBordersIndex.xlEdgeBottom].Weight = 2.0;
+                            row++;
+
+                            workSheet.Cells[row, 1] = "Model";
+                            workSheet.Cells[row, 2] = "Min Velocity";
+                            workSheet.Cells[row, 3] = "Best Error";
+                            workSheet.Cells[row, 4] = "Best Parameters\n(Vr, Vt, Vs, Vc, Rmax, Phi)  ";
+                            workSheet.Cells[row, 5] = "Min Parameters\n(Vr, Vt, Vs, Vc, Rmax, Phi)   ";
+                            workSheet.Range[workSheet.Cells[row, 1], workSheet.Cells[row, 5]].Style = "HS";
+                            workSheet.Range[workSheet.Cells[row, 1], workSheet.Cells[row, 5]].Borders[Excel.XlBordersIndex.xlEdgeBottom].Weight = 2.0;
+
+                            DataGrid dg = fullResultPanel.Children[i] as DataGrid;
+                            var matchResults = dg.ItemsSource as List<MatchingResult>;
+
+                            double bestError = 9999999999.0;
+                            int bestIdx = 0;
+
+                            foreach (var result in matchResults)
+                            {
+                                if (!Double.IsNaN(result.BestError) && result.BestError < bestError)
+                                {
+                                    bestError = result.BestError;
+                                    bestIdx = matchResults.IndexOf(result);
+                                }
+                            }
+                            workSheet.Range[workSheet.Cells[row, 6], workSheet.Cells[row + matchResults.Count, 9]].merge();
+                            workSheet.Columns.AutoFit();
+
+                            dg.SelectedIndex = bestIdx;
+                            matchSelected(dg, null);
+                            var split = saveDialog.FileName.Split('\\');
+                            split = split.Take(split.Count() - 1).ToArray();
+                            string path = String.Join("\\", split) + "\\";
+
+                            fullMatchedPatternPlot.Plot.SaveFig(path + "temp.png");
+
+                            float w = 0.0f;
+
+                            for (int j = 6; j <= 9; j++)
+                            {
+                                w += (float)workSheet.Cells[row, j].Width;
+                            }
+                            w /= 2.0f;
+
+                            float h = 310.0f;
+
+                            workSheet.Shapes.AddPicture(path + "temp.png", Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoCTrue, (float)workSheet.Cells[row, 6].Left + w / 2.0f, (float)workSheet.Cells[row, 6].Top + 5, w, h);
+
+                            row++;
+
+                            foreach (var result in matchResults)
+                            {
+                                if (!Double.IsNaN(result.BestError) && result.BestError < bestError)
+                                {
+                                    bestError = result.BestError;
+                                    bestIdx = matchResults.IndexOf(result);
+                                }
+
+                                workSheet.Cells[row, 1] = result.Model;
+                                workSheet.Cells[row, 2] = result.MinVelocity;
+                                workSheet.Cells[row, 3] = Double.IsNaN(result.BestError) ? "x" : result.BestError;
+                                workSheet.Cells[row, 4] = result.BestParams + "          ";
+                                workSheet.Cells[row, 5] = result.MinParams + "          ";
+                                workSheet.Range[workSheet.Cells[row, 1], workSheet.Cells[row, 5]].Style = "BS";
+                                row++;
+                            }
+                            row++;
+
+                            //workSheet.Range[workSheet.Cells[startRow, 1], workSheet.Cells[row, 9]].Columns.AutoFit();
+                            workSheet.Columns.AutoFit();
+                            workSheet.Range[workSheet.Cells[row - 1 - matchResults.Count, 1], workSheet.Cells[row - 2, 1]].Borders[Excel.XlBordersIndex.xlEdgeRight].Weight = 2.0;
+                            workSheet.Range[workSheet.Cells[row - 2 - matchResults.Count, 5], workSheet.Cells[row - 2, 5]].Borders[Excel.XlBordersIndex.xlEdgeRight].Weight = 2.0;
+                            workSheet.Range[workSheet.Cells[row - 3, 1], workSheet.Cells[row - 3, 5]].Borders[Excel.XlBordersIndex.xlEdgeBottom].Weight = 1.0;
+                            workSheet.Range[workSheet.Cells[row - 3, 1], workSheet.Cells[row - 3, 5]].Borders[Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Excel.XlLineStyle.xlDouble;
+                            workSheet.Range[workSheet.Cells[startRow, 1], workSheet.Cells[row, 9]].Rows.RowHeight = 40;
+                            //workSheet.Range[workSheet.Cells[startRow, 1], workSheet.Cells[row, 9]].Style.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+                            workSheet.Range[workSheet.Cells[startRow, 1], workSheet.Cells[row - 2, 9]].Borders[Excel.XlBordersIndex.xlEdgeRight].Weight = 2.0;
+                            workSheet.Range[workSheet.Cells[startRow, 1], workSheet.Cells[row - 2, 9]].Borders[Excel.XlBordersIndex.xlEdgeLeft].Weight = 2.0;
+                            workSheet.Range[workSheet.Cells[startRow, 1], workSheet.Cells[row - 2, 9]].Borders[Excel.XlBordersIndex.xlEdgeTop].Weight = 2.0;
+                            workSheet.Range[workSheet.Cells[startRow, 1], workSheet.Cells[row - 2, 9]].Borders[Excel.XlBordersIndex.xlEdgeBottom].Weight = 2.0;
+                        }
+
+                        workSheet.SaveAs(saveDialog.FileName);
+                        workbooks.Close();
+                        excelApp.Quit();
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to Export Image\nError:\n\n" + ex.Message);
             }
 
-            File.WriteAllText("C:\\Users\\dbutt7\\Desktop\\Alonsa Transect Analysis\\Test.csv", csvData, UnicodeEncoding.UTF8);
+            MessageBox.Show("Export Complete");
         }
 
     }
