@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,12 +15,13 @@ namespace TreefallPatternAnalysis
 {
     public static class PatternSolver
     {
+        //private static const string pathSource = System.IO.Path.GetDirectoryName(new System.Uri(Assembly.GetEntryAssembly().Location).AbsolutePath).Replace("%20", " ") + "\\TreefallAnalysis";
 
-        [DllImport("D:\\PatternSolver\\x64\\Release\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("TreefallAnalysis\\bin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
         private static unsafe extern double** matchPattern(double* p, double[] modelParams, int modelType, int compareType, int weightType, double dx, double wAbove, double wBelow);
-        [DllImport("D:\\PatternSolver\\x64\\Release\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("TreefallAnalysis\\bin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
         private static unsafe extern double** generatePattern(double[] modelParams, int modelType, double dx);
-        [DllImport("D:\\PatternSolver\\x64\\Release\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("TreefallAnalysis\\bin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
         private static unsafe extern double*** generateField(double[] fieldParams, double[] modelParams, int modelType);
 
         public record Field(double[,] m, Vector2[,] v, double[] x, double[] y)

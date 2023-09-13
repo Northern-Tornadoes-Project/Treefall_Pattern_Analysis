@@ -12,6 +12,7 @@ namespace TreefallPatternAnalysis
         public double x, y, theta, lengthAbove, lengthBelow, width, positionOffset, heightOffset, angleOffset;
         public List<double> patternVecs = new List<double>();
         public List<double[]> matches = new List<double[]>();
+        public List<(string, List<double[]>)> results = new List<(string, List<double[]>)>();
         public ScottPlot.Plottable.Polygon box;
         private ScottPlot.Plottable.MarkerPlot marker;
         private ScottPlot.Plottable.ScatterPlot perpLine;

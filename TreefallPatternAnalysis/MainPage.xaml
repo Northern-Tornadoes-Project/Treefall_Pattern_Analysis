@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         ResizeMode="CanResize"
         ShowMinButton="True" 
-        Title="Treefall Pattern Analysis" Height="720" Width="1280"
+        Title="Treefall Pattern Analysis (Beta Version)" Height="720" Width="1280"
         WindowStartupLocation="CenterOwner">
     <controls:ProWindow.Resources>
         <ResourceDictionary>
@@ -131,8 +131,8 @@
                         <ListBox.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="New" Click="newTransect"/>
-                                <MenuItem Header="Load"/>
-                                <MenuItem Header="Save Selected"/>
+                                <MenuItem Header="Load" IsEnabled="False"/>
+                                <MenuItem Header="Save Selected" IsEnabled="False"/>
                                 <Separator/>
                                 <MenuItem Header="Delete Selected" Click="removeTransect"/>
                             </ContextMenu>
@@ -168,7 +168,7 @@
                     <Label Content="Vector Spacing" FontSize="16" HorizontalAlignment="Left" Height="31" Margin="808,486,0,0" VerticalAlignment="Top" Width="116" Grid.Column="2"/>
                     <TextBox TextChanged="SliderValueChanged" x:Name="vectorSpacing" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" FontSize="16" Margin="924,490,0,0" TextWrapping="Wrap" Text="40" VerticalAlignment="Top" Width="45" Height="25" Grid.Column="2"/>
                     <Label Content="m" FontSize="16" HorizontalAlignment="Left" Height="36" Margin="969,490,0,0" VerticalAlignment="Top" Width="30" Grid.Column="2" RenderTransformOrigin="0.532,-0.209"/>
-                    <Button Click="testMatch" Content="Test Match" FontSize="16" HorizontalAlignment="Left" Height="27" Margin="913,583,0,0" VerticalAlignment="Top" Width="82" Grid.Column="2"/>
+                    <Button Click="testMatch" IsEnabled="False" Content="Test Match" FontSize="16" HorizontalAlignment="Left" Height="27" Margin="913,583,0,0" VerticalAlignment="Top" Width="82" Grid.Column="2"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Model and Parameters">
@@ -233,22 +233,22 @@
                     <Label Content="Step" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" Height="32" Margin="97,300,0,0" VerticalAlignment="Top" Width="49" Grid.Column="1"/>
                     <TextBox x:Name="vtmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="185,154,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
                     <TextBox x:Name="vtmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="185,229,0,0" TextWrapping="Wrap" Text="50" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
-                    <TextBox x:Name="vtstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="185,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
-                    <TextBox x:Name="vrstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="310,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vtstep" IsEnabled="False" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="185,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vrstep" IsEnabled="False" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="310,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
                     <TextBox x:Name="vrmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="310,229,0,0" TextWrapping="Wrap" Text="80" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
                     <TextBox x:Name="vrmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="310,154,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
-                    <TextBox x:Name="vsmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="435,154,0,0" TextWrapping="Wrap" Text="15" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vsmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="435,154,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
                     <TextBox x:Name="vsmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="435,229,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
-                    <TextBox x:Name="vsstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="435,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
-                    <TextBox x:Name="vcstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="560,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vsstep" IsEnabled="False" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="435,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vcstep" IsEnabled="False" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="560,304,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
                     <TextBox x:Name="vcmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="560,229,0,0" TextWrapping="Wrap" Text="50" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
-                    <TextBox x:Name="vcmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="560,154,0,0" TextWrapping="Wrap" Text="45" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="vcmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="560,154,0,0" TextWrapping="Wrap" Text="40" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
                     <TextBox x:Name="rmaxmin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="685,154,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
                     <TextBox x:Name="rmaxmax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="685,229,0,0" TextWrapping="Wrap" Text="300" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
-                    <TextBox x:Name="rmaxstep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="685,304,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
-                    <TextBox x:Name="phimin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="810,154,0,0" TextWrapping="Wrap" Text="0.65" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
-                    <TextBox x:Name="phimax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="810,229,0,0" TextWrapping="Wrap" Text="1.35" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
-                    <TextBox x:Name="phistep" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="810,304,0,0" TextWrapping="Wrap" Text="0.05" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="rmaxstep" IsEnabled="False" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="685,304,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="phimin" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="810,154,0,0" TextWrapping="Wrap" Text="0.5" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="phimax" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="810,229,0,0" TextWrapping="Wrap" Text="1.0" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <TextBox x:Name="phistep" IsEnabled="False" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="810,304,0,0" TextWrapping="Wrap" Text="0.05" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
                     <Label Content="m/s" FontSize="16" HorizontalAlignment="Left" Height="32" Margin="239,150,0,0" VerticalAlignment="Top" Width="40" Grid.Column="1"/>
                     <ListBox x:Name="errorTypeListView" HorizontalAlignment="Left" Height="187" Margin="638,417,0,0" VerticalAlignment="Top" Width="199" SelectedIndex="0" Grid.Column="1">
                         <ListBoxItem Content="Dot Product" FontSize="18" Padding="5" BorderBrush="Black"/>
@@ -302,7 +302,12 @@
                     <Label Content="X" HorizontalAlignment="Left" Height="24" Margin="514,513,0,0" VerticalAlignment="Top" Width="62" Grid.Column="1"/>
                     <Label Content="m" HorizontalAlignment="Left" Height="24" Margin="514,560,0,0" VerticalAlignment="Top" Width="62" Grid.Column="1"/>
                     <Label Content="°" FontSize="20" HorizontalAlignment="Left" Height="24" Margin="514,601,0,0" VerticalAlignment="Top" Width="62" Grid.Column="1"/>
-
+                    <Label Grid.Column="1" FontSize="16" Content="Cutoff:" HorizontalAlignment="Left" Height="30" Margin="641,637,0,0" VerticalAlignment="Top" Width="141"/>
+                    <TextBox x:Name="cutoffThreshold" PreviewTextInput="NumberValidationTextBox" TextAlignment="Right" HorizontalAlignment="Left" FontSize="16" Height="24" Margin="705,640,0,0" TextWrapping="Wrap" Text="0.20" VerticalAlignment="Top" Width="54" Grid.Column="1"/>
+                    <CheckBox x:Name="cutoffToggle" Style="{DynamicResource Esri_CheckboxToggleSwitch}" HorizontalAlignment="Left" Margin="638,601,0,0" VerticalAlignment="Top" Height="36" Width="94" Grid.Column="1">
+                        <Label Content="Threshold"/>
+                    </CheckBox>
+                    <Label Grid.Column="1" Content="Percent Difference" HorizontalAlignment="Left" Height="25" Margin="737,602,0,0" VerticalAlignment="Top" Width="106"/>
 
 
                 </Grid>
@@ -323,20 +328,24 @@
                     <Label Content="Best Matches" FontWeight="Bold" FontSize="16" HorizontalAlignment="Left" Height="34" Margin="717,82,0,0" VerticalAlignment="Top" Width="140" Grid.Column="1"/>
                     <Label Content="Match Info" FontWeight="Bold" FontSize="16" HorizontalAlignment="Left" Height="34" Margin="880,82,0,0" VerticalAlignment="Top" Width="140" Grid.Column="1"/>
                     <Label Content="Pattern" FontWeight="Bold" FontSize="16" HorizontalAlignment="Left" Height="34" Margin="572,82,0,0" VerticalAlignment="Top" Width="140" Grid.Column="1"/>
-                    <Button Content="Export Selected" HorizontalAlignment="Left" Height="35" Margin="100,635,0,0" VerticalAlignment="Top" Width="105"/>
-                    <Button Content="Export All" HorizontalAlignment="Left" Height="35" Margin="0,635,0,0" VerticalAlignment="Top" Width="105" Grid.Column="1"/>
+                    <Button Content="Export Selected" HorizontalAlignment="Left" Height="35" Margin="100,635,0,0" VerticalAlignment="Top" Width="105" IsEnabled="False"/>
+                    <Button Content="Export All" HorizontalAlignment="Left" Height="35" Margin="0,635,0,0" VerticalAlignment="Top" Width="105" Grid.Column="1" IsEnabled="False" />
                     <Button Content="Next" FontSize="16" HorizontalAlignment="Left" Height="27" Margin="909,639,0,0" VerticalAlignment="Top" Width="82" Grid.Column="1"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Full Results">
                 <Grid>
-                    <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="10,0,300,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="176*"/>
+                        <ColumnDefinition Width="461*"/>
+                    </Grid.ColumnDefinitions>
+                    <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="10,0,300,0" Grid.ColumnSpan="2">
                         <StackPanel x:Name="fullResultPanel"></StackPanel>
                     </ScrollViewer>
-                    <Button Content="Export Selected" HorizontalAlignment="Left" Height="35" Margin="1003,617,0,0" VerticalAlignment="Top" Width="105"/>
-                    <Button Content="Export All" HorizontalAlignment="Left" Height="35" Margin="1145,617,0,0" VerticalAlignment="Top" Width="105" RenderTransformOrigin="0.505,1.758" Click="ExportAll"/>
-                    <WpfPlot MouseDown="rescaleMatchedPatternPlot" x:Name="fullMatchedPatternPlot" HorizontalAlignment="Left" Height="434" Margin="1037,103,0,0" VerticalAlignment="Top" Width="162"/>
-                    <Label Content="Pattern" FontWeight="Bold" FontSize="16" HorizontalAlignment="Left" Height="34" Margin="1078,64,0,0" VerticalAlignment="Top" Width="140"/>
+                    <Button Content="Export Matches" HorizontalAlignment="Left" Height="35" Margin="651,617,0,0" VerticalAlignment="Top" Width="105" Click="ExportFullMatches" Grid.Column="1"/>
+                    <Button Content="Export Results" HorizontalAlignment="Left" Height="35" Margin="793,617,0,0" VerticalAlignment="Top" Width="105" RenderTransformOrigin="0.505,1.758" Click="ExportFullResults" Grid.Column="1"/>
+                    <WpfPlot MouseDown="rescaleMatchedPatternPlot" x:Name="fullMatchedPatternPlot" HorizontalAlignment="Left" Height="434" Margin="685,103,0,0" VerticalAlignment="Top" Width="162" Grid.Column="1"/>
+                    <Label Content="Pattern" FontWeight="Bold" FontSize="16" HorizontalAlignment="Left" Height="34" Margin="726,64,0,0" VerticalAlignment="Top" Width="140" Grid.Column="1"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Manual Matching">
@@ -424,7 +433,7 @@
                     </StackPanel>
                 </Grid>
             </TabItem>
-            <TabItem Header="Wind Field">
+            <TabItem Header="Wind Field" IsEnabled="False">
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="142*"/>

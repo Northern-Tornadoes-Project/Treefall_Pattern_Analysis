@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         ResizeMode="CanResize"
         ShowMinButton="True" 
-        Title="ModelAnalysis" Height="720" Width="1080"
+        Title="Model Analysis (Beta Version)" Height="720" Width="1080"
         WindowStartupLocation="CenterOwner"
     >
     <controls:ProWindow.Resources>
@@ -154,7 +154,7 @@
                     <WpfPlot x:Name="patternGraphPlot" HorizontalAlignment="Left" Height="571" VerticalAlignment="Top" Width="825" Margin="-10,0,0,0" />
                 </Grid>
             </TabItem>
-            <TabItem Header="Simulator">
+            <TabItem Header="Simulator" IsEnabled="False">
                 <Grid Background="#FFE5E5E5" />
             </TabItem>
             <TabItem Header="Model Profiles">
