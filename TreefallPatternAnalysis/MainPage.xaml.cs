@@ -115,99 +115,106 @@ namespace TreefallPatternAnalysis
 
         private async void inputSelectionNextButton(object sender, RoutedEventArgs e)
         {
-            
-
-            if (VectorsSelectionBox.SelectedItem == null || ConvergenceSelectionBox.SelectedItem == null) return;
-
-            string vecName = (string)VectorsSelectionBox.SelectedItem;
-            string covName = (string)ConvergenceSelectionBox.SelectedItem;
-
-            foreach (var layer in fLayers)
+            try
             {
-                if (layer.Name.Equals(vecName))
+                if (VectorsSelectionBox.SelectedItem == null || ConvergenceSelectionBox.SelectedItem == null) return;
+
+                string vecName = (string)VectorsSelectionBox.SelectedItem;
+                string covName = (string)ConvergenceSelectionBox.SelectedItem;
+
+                foreach (var layer in fLayers)
                 {
-                    selectedVector = layer;
-                }
-                else if (layer.Name.Equals(covName))
-                {
-                    selectedConvergence = layer;
-                }
-            }
-
-            if (selectedVector == null || selectedConvergence == null) return;
-
-            await QueuedTask.Run(() =>
-            {
-                //var table = selectedConvergence.GetTable();
-
-                /*ArcGIS.Core.Data.QueryFilter queryFilter = new ArcGIS.Core.Data.QueryFilter
-                {
-                    WhereClause = "OBJECTID = 1"
-                };
-
-                var selection = selectedConvergence.Select(queryFilter);*/
-
-
-                using (ArcGIS.Core.Data.Table shp_table = selectedVector.GetTable()) 
-                { 
-                    using (RowCursor rowCursor = shp_table.Search()) 
+                    if (layer.Name.Equals(vecName))
                     {
-                        overviewVectors.Clear();
-                        while (rowCursor.MoveNext()) 
-                        { 
-                            using (Feature f = (Feature)rowCursor.Current) 
-                            {
-                                ArcGIS.Core.Geometry.Polyline pl = (ArcGIS.Core.Geometry.Polyline) f.GetShape();
-                                overviewVectors.Add((pl.Points[0].X, pl.Points[0].Y, pl.Points[1].X, pl.Points[1].Y));
-                            } 
-                        } 
-                    } 
+                        selectedVector = layer;
+                    }
+                    else if (layer.Name.Equals(covName))
+                    {
+                        selectedConvergence = layer;
+                    }
                 }
 
-                using (ArcGIS.Core.Data.Table shp_table = selectedConvergence.GetTable())
+                if (selectedVector == null || selectedConvergence == null) return;
+
+                await QueuedTask.Run(() =>
                 {
-                    using (RowCursor rowCursor = shp_table.Search())
+                    //var table = selectedConvergence.GetTable();
+
+                    /*ArcGIS.Core.Data.QueryFilter queryFilter = new ArcGIS.Core.Data.QueryFilter
                     {
-                        while (rowCursor.MoveNext())
+                        WhereClause = "OBJECTID = 1"
+                    };
+
+                    var selection = selectedConvergence.Select(queryFilter);*/
+
+
+                    using (ArcGIS.Core.Data.Table shp_table = selectedVector.GetTable())
+                    {
+                        using (RowCursor rowCursor = shp_table.Search())
                         {
-                            using (Feature f = (Feature)rowCursor.Current)
+                            overviewVectors.Clear();
+                            while (rowCursor.MoveNext())
                             {
-                                ArcGIS.Core.Geometry.Polyline pl = (ArcGIS.Core.Geometry.Polyline)f.GetShape();
-
-                                convergenceLineX = new double[pl.Points.Count];
-                                convergenceLineY = new double[pl.Points.Count];
-                                convergenceLineDists = new double[pl.Points.Count];
-                                convergenceLineDists[0] = 0;
-
-                                for (int i = 0; i < pl.Points.Count; i++)
+                                using (Feature f = (Feature)rowCursor.Current)
                                 {
-                                    convergenceLineX[i] = pl.Points[i].X;
-                                    convergenceLineY[i] = pl.Points[i].Y;
-                                }
-
-                                for (int i = 1; i < pl.Points.Count; i++)
-                                {
-                                    double dx = (pl.Points[i].X - pl.Points[i - 1].X);
-                                    double dy = (pl.Points[i].Y - pl.Points[i - 1].Y);
-
-                                    convergenceLineDists[i] = convergenceLineDists[i-1] + Math.Sqrt(dx * dx + dy * dy);
+                                    ArcGIS.Core.Geometry.Polyline pl = (ArcGIS.Core.Geometry.Polyline)f.GetShape();
+                                    overviewVectors.Add((pl.Points[0].X, pl.Points[0].Y, pl.Points[1].X, pl.Points[1].Y));
                                 }
                             }
                         }
                     }
-                }
+
+                    using (ArcGIS.Core.Data.Table shp_table = selectedConvergence.GetTable())
+                    {
+                        using (RowCursor rowCursor = shp_table.Search())
+                        {
+                            while (rowCursor.MoveNext())
+                            {
+                                using (Feature f = (Feature)rowCursor.Current)
+                                {
+                                    ArcGIS.Core.Geometry.Polyline pl = (ArcGIS.Core.Geometry.Polyline)f.GetShape();
+
+                                    convergenceLineX = new double[pl.Points.Count];
+                                    convergenceLineY = new double[pl.Points.Count];
+                                    convergenceLineDists = new double[pl.Points.Count];
+                                    convergenceLineDists[0] = 0;
+
+                                    for (int i = 0; i < pl.Points.Count; i++)
+                                    {
+                                        convergenceLineX[i] = pl.Points[i].X;
+                                        convergenceLineY[i] = pl.Points[i].Y;
+                                    }
+
+                                    for (int i = 1; i < pl.Points.Count; i++)
+                                    {
+                                        double dx = (pl.Points[i].X - pl.Points[i - 1].X);
+                                        double dy = (pl.Points[i].Y - pl.Points[i - 1].Y);
+
+                                        convergenceLineDists[i] = convergenceLineDists[i - 1] + Math.Sqrt(dx * dx + dy * dy);
+                                    }
+                                }
+                            }
+                        }
+                    }
 
 
-            });
+                });
 
-            transectPositionSlider.Maximum = convergenceLineDists[convergenceLineDists.Length - 1];
-            transectPositionSlider.TickFrequency = convergenceLineDists[convergenceLineDists.Length - 1] / 100;
+                transectPositionSlider.Maximum = convergenceLineDists[convergenceLineDists.Length - 1];
+                transectPositionSlider.TickFrequency = convergenceLineDists[convergenceLineDists.Length - 1] / 100;
 
-            headerTabs.SelectedIndex = 1;
+                headerTabs.SelectedIndex = 1;
 
-            reDrawTransectOverview();
-           
-            transectsOverviewPlot.Configuration.MiddleClickAutoAxis = false;
+                reDrawTransectOverview();
+
+                transectsOverviewPlot.Configuration.MiddleClickAutoAxis = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to load specified Files, the files must be in a\n" +
+                                "polyline shapefile where each vector is a polyline, and the\n" +
+                                "convergence line must be a single polyline\n\nError:\n\n" + ex.Message);
+            }
 
         }
 
@@ -984,6 +991,8 @@ namespace TreefallPatternAnalysis
                 int compareType = errorTypeListView.SelectedIndex > 0 ? errorTypeListView.SelectedIndex : 0;
                 int weightType = weightTypeListView.SelectedIndex > 0 ? weightTypeListView.SelectedIndex : 0;
 
+                bool failedToMatch = false;
+
                 for (int i = 0; i < transects.Count(); i++)
                 {
                     await QueuedTask.Run(() =>
@@ -993,7 +1002,20 @@ namespace TreefallPatternAnalysis
                                                                               Math.Ceiling(transects[i].lengthBelow / spacing) * spacing);
 
                     });
+
+                    if (transects[i].matches.Count == 0)
+                    {
+                        failedToMatch = true;
+                    }
+
                     pb.Value++;
+                }
+
+                if(failedToMatch)
+                {
+                    MessageBox.Show("FAILED TO MATCH PATTERN\n\n" +
+                                    "Failed to find adequete matches for some transects consider\n" +
+                                    "increasing the match tolerance or fitting better patterns");
                 }
 
                 loadingBarWindow.Close();
@@ -1166,7 +1188,7 @@ namespace TreefallPatternAnalysis
             {
                 int idx = resultTransectsList.SelectedIndex;
 
-                if (idx < 0) return;
+                if (idx < 0 || transects[idx].matches.IsNullOrEmpty()) return;
 
                 bestMatchesListBox.Items.Clear();
 
@@ -1413,6 +1435,8 @@ namespace TreefallPatternAnalysis
                 int compareType = errorTypeListView.SelectedIndex > 0 ? errorTypeListView.SelectedIndex : 0;
                 int weightType = weightTypeListView.SelectedIndex > 0 ? weightTypeListView.SelectedIndex : 0;
 
+                bool failedToMatch = false;
+
                 for (int i = 0; i < transects.Count; i++)
                 {
 
@@ -1451,6 +1475,7 @@ namespace TreefallPatternAnalysis
                         else
                         {
                             results.Add(new MatchingResult(((ListBoxItem)modelTypeListView.Items[j]).Content.ToString(), "N/A", 0, "x", "x"));
+                            failedToMatch = true;
                         }
 
                         if (j == 0)
@@ -1460,6 +1485,13 @@ namespace TreefallPatternAnalysis
                         }
 
                         pbm.Value++;
+                    }
+
+                    if (failedToMatch)
+                    {
+                        MessageBox.Show("FAILED TO MATCH PATTERN\n\n" +
+                                    "Failed to find adequete matches for some transects consider\n" +
+                                    "increasing the match tolerance or fitting better patterns");
                     }
 
                     Label label = new Label();
