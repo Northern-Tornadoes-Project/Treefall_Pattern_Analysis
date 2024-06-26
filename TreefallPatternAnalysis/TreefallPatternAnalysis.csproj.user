@@ -2,10 +2,33 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="CustomModelParameters.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="LPGraph.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="PatternPlot.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="CustomModelAnalysis.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CustomModelParameters.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="LPGraph.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MainPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="ModelAnalysis.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="PatternPlot.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

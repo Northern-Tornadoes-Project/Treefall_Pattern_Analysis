@@ -1,0 +1,25 @@
+﻿<controls:ProWindow x:Class="TreefallPatternAnalysis.CustomModelAnalysis"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:controls="clr-namespace:ArcGIS.Desktop.Framework.Controls;assembly=ArcGIS.Desktop.Framework"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
+        xmlns:local="clr-namespace:TreefallPatternAnalysis"
+        mc:Ignorable="d"
+        Title="CustomModelAnalysis" Height="720" Width="1280" MinHeight="720" MinWidth="1280"
+        WindowStartupLocation="CenterOwner"
+        Focusable="True" PreviewKeyDown="KeyPressed" PreviewKeyUp="KeyReleased">
+    <Grid >
+
+        <WpfPlot x:Name="graphPlot" HorizontalAlignment="Left" Margin="302,0,0,0" VerticalAlignment="Top" Height="418" Width="678"/>
+        <local:LPGraph x:Name="lpGraph" HorizontalAlignment="Left" Margin="0,420,0,0" VerticalAlignment="Top" Height="283" Width="1280"/>
+        <local:CustomModelParameters x:Name="customModelParameters" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Height="420" Width="300"/>
+        <Rectangle HorizontalAlignment="Left" Height="420" Margin="300,0,0,0" Stroke="Black" VerticalAlignment="Top" Width="2"/>
+        <Rectangle HorizontalAlignment="Center" Height="2" Margin="0,418,0,0" Stroke="Black" VerticalAlignment="Top" Width="1280"/>
+        <Rectangle HorizontalAlignment="Center" Height="2" Margin="0,-2,0,0" Stroke="Black" VerticalAlignment="Top" Width="1280"/>
+        <Rectangle HorizontalAlignment="Left" Height="420" Margin="978,-2,0,0" Stroke="Black" VerticalAlignment="Top" Width="2"/>
+        <local:PatternPlot x:Name="patternPlot" HorizontalAlignment="Left" Margin="1057,9,0,0" VerticalAlignment="Top"/>
+
+    </Grid>
+</controls:ProWindow>

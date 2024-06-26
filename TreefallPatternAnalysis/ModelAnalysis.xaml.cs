@@ -41,9 +41,10 @@ namespace TreefallPatternAnalysis
         }
 
         private ScottPlot.Plottable.Ellipse rmaxCircle;
-        private ScottPlot.Plottable.ScatterPlot innerSolutionPoly;
-        private ScottPlot.Plottable.ScatterPlot outerSolutionPoly;
-        private ScottPlot.Plottable.FunctionPlot solutionFunc;
+        /*        private ScottPlot.Plottable.ScatterPlot innerSolutionPoly;
+                private ScottPlot.Plottable.ScatterPlot outerSolutionPoly;
+                private ScottPlot.Plottable.FunctionPlot solutionFunc;*/
+        private ScottPlot.Plottable.ScatterPlot solutionCurve;
 
         public void RenderGraph()
         {
@@ -119,36 +120,43 @@ namespace TreefallPatternAnalysis
                 }
                 if ((bool)displaySolutionCurve.IsChecked)
                 {
-                    switch (modelType)
-                    {
-                        case 0:
-                            var (oxs, oys) = PolarRankine(vrSlider.Value, vtSlider.Value, vsSlider.Value, vcSlider.Value, rmaxSlider.Value, phiSlider.Value, true);
+                    /*                    switch (modelType)
+                                        {
+                                            case 0:
+                                                var (oxs, oys) = PolarRankine(vrSlider.Value, vtSlider.Value, vsSlider.Value, vcSlider.Value, rmaxSlider.Value, phiSlider.Value, true);
 
-                            outerSolutionPoly = plt.AddScatter(oxs, oys, System.Drawing.Color.White, 4, 1);
+                                                outerSolutionPoly = plt.AddScatter(oxs, oys, System.Drawing.Color.White, 4, 1);
 
-                            var (ixs, iys) = PolarRankine(vrSlider.Value, vtSlider.Value, vsSlider.Value, vcSlider.Value, rmaxSlider.Value, phiSlider.Value, false);
+                                                var (ixs, iys) = PolarRankine(vrSlider.Value, vtSlider.Value, vsSlider.Value, vcSlider.Value, rmaxSlider.Value, phiSlider.Value, false);
 
-                            innerSolutionPoly = plt.AddScatter(ixs, iys, System.Drawing.Color.White, 4, 1);
-                            break;
+                                                innerSolutionPoly = plt.AddScatter(ixs, iys, System.Drawing.Color.White, 4, 1);
+                                                break;
 
-                        case 1:
-                            solutionFunc = plt.AddFunction(new Func<double, double?>((x) => solveBakerSterling(x, new double[] { vrSlider.Value, vtSlider.Value, vsSlider.Value, vcSlider.Value, rmaxSlider.Value })),
-                                                           System.Drawing.Color.White, 4, LineStyle.Solid);
-                            break;
-                    }
+                                            case 1:
+                                                solutionFunc = plt.AddFunction(new Func<double, double?>((x) => solveBakerSterling(x, new double[] { vrSlider.Value, vtSlider.Value, vsSlider.Value, vcSlider.Value, rmaxSlider.Value })),
+                                                                               System.Drawing.Color.White, 4, LineStyle.Solid);
+                                                break;
+                                        }*/
+                    var (xs, ys) = PatternSolver.getCurve(500, [vrSlider.Value, vtSlider.Value, vsSlider.Value, vcSlider.Value, rmaxSlider.Value, phiSlider.Value], modelType);
+
+                    solutionCurve = plt.AddScatter(xs, ys, System.Drawing.Color.White, 4, 1);
                 }
                 else
                 {
-                    plt.Remove(solutionFunc);
+                    plt.Remove(solutionCurve);
+                    /*plt.Remove(solutionFunc);
                     plt.Remove(innerSolutionPoly);
-                    plt.Remove(outerSolutionPoly);
+                    plt.Remove(outerSolutionPoly);*/
                 }
 
                 double scaleFactor = dx;
 
-                var vf = plt.AddVectorField(field.unitVecs, field.xPositions, field.yPositions, null, System.Drawing.Color.Black, null, scaleFactor);
-                vf.ScaledArrowheads = true;
-                vf.ScaledArrowheadLength = 0.4;
+                if ((bool)displayVectors.IsChecked)
+                {
+                    var vf = plt.AddVectorField(field.unitVecs, field.xPositions, field.yPositions, null, System.Drawing.Color.Black, null, scaleFactor);
+                    vf.ScaledArrowheads = true;
+                    vf.ScaledArrowheadLength = 0.4;
+                }
 
                 //plt.SetAxisLimits(-1000.0, 1000.0, -1000.0, 1000.0);
                 plt.SetAxisLimits(al);
@@ -210,7 +218,7 @@ namespace TreefallPatternAnalysis
 
                 if ((bool)displayRmax.IsChecked)
                 {
-                    rmaxCircle = plt.AddCircle(0, 0, rmaxSlider.Value, System.Drawing.Color.Black, 4);
+                    rmaxCircle = plt.AddCircle(0, 0, rmaxSlider.Value, System.Drawing.Color.Black, 2, LineStyle.Dash);
                 }
                 else
                 {
@@ -222,7 +230,7 @@ namespace TreefallPatternAnalysis
                     if ((bool)displaySolutionCurve.IsChecked)
                     {
 
-                        switch (modelType)
+                        /* switch (modelType)
                         {
                             case 0:
                                 var (oxs, oys) = PolarRankine(vrSlider.Value, vtSlider.Value, vsSlider.Value, vcSlider.Value, rmaxSlider.Value, phiSlider.Value, true);
@@ -238,37 +246,66 @@ namespace TreefallPatternAnalysis
                                 solutionFunc = plt.AddFunction(new Func<double, double?>((x) => solveBakerSterling(x, new double[] { vrSlider.Value, vtSlider.Value, vsSlider.Value, vcSlider.Value, rmaxSlider.Value })),
                                                                 System.Drawing.Color.White, 4, LineStyle.Solid);
                                 break;
-                        }
+                        }*/
+
+                        var (xs, ys) = PatternSolver.getCurve(500, [vrSlider.Value, vtSlider.Value, vsSlider.Value, vcSlider.Value, rmaxSlider.Value, phiSlider.Value], modelType);
+
+                        solutionCurve = plt.AddScatter(xs, ys, System.Drawing.Color.White, 4, 1);
 
                     }
                     else
                     {
-                        plt.Remove(solutionFunc);
+                        plt.Remove(solutionCurve);
+                        /*plt.Remove(solutionFunc);
                         plt.Remove(innerSolutionPoly);
-                        plt.Remove(outerSolutionPoly);
+                        plt.Remove(outerSolutionPoly);*/
                     }
 
                     var pattern = PatternSolver.getPattern(new double[] { vtSlider.Value, vrSlider.Value, vsSlider.Value, vcSlider.Value, rmaxSlider.Value, phiSlider.Value }, modelType, dx, false);
 
-                    var vf = plt.AddVectorFieldList();
-                    vf.Color = System.Drawing.Color.Black;
-                    vf.ArrowStyle.ScaledArrowheads = true;
-                    vf.ArrowStyle.ScaledArrowheadLength = 0.4;
-
-                    foreach (var p in pattern)
+                    if ((bool)displayVectors.IsChecked)
                     {
-                        //System.Diagnostics.Debug.WriteLine(p[0] + " " + p[1] + " " + p[2] + " " + p[3]);
-                        vf.RootedVectors.Add((new Coordinate(p[0], p[1]), new CoordinateVector(p[2] * dx, p[3] * dx)));
+                        /*foreach (var p in pattern)
+                        {
+                            var l = plt.AddLine(x1: p[0], y1: 2000.0, x2: p[0], y2: -2000.0, color: System.Drawing.Color.Red);
+                            l.LineStyle = LineStyle.Dash;
+                        }*/
+
+                        var vf = plt.AddVectorFieldList();
+                        vf.Color = System.Drawing.Color.Black;
+                        vf.ArrowStyle.LineWidth = 2;
+                        vf.ArrowStyle.ScaledArrowheads = true;
+                        vf.ArrowStyle.ScaledArrowheadLength = 0.4;
+
+                        foreach (var p in pattern)
+                        {
+                            //System.Diagnostics.Debug.WriteLine(p[0] + " " + p[1] + " " + p[2] + " " + p[3]);
+                            vf.RootedVectors.Add((new Coordinate(p[0], p[1]), new CoordinateVector(p[2] * dx, p[3] * dx)));
+                        }
                     }
 
-                    var pvf = patternPlot.Plot.AddVectorFieldList();
-                    pvf.Color = System.Drawing.Color.White;
-                    pvf.ArrowStyle.ScaledArrowheads = true;
-                    pvf.ArrowStyle.ScaledArrowheadLength = 0.4;
+                    var pvfp = patternPlot.Plot.AddVectorFieldList();
+                    pvfp.Color = System.Drawing.Color.Red;
+                    pvfp.ArrowStyle.LineWidth = 2;
+                    pvfp.ArrowStyle.ScaledArrowheads = true;
+                    pvfp.ArrowStyle.ScaledArrowheadLength = 0.4;
+
+                    var pvfn = patternPlot.Plot.AddVectorFieldList();
+                    pvfn.Color = System.Drawing.Color.Green;
+                    pvfn.ArrowStyle.LineWidth = 2;
+                    pvfn.ArrowStyle.ScaledArrowheads = true;
+                    pvfn.ArrowStyle.ScaledArrowheadLength = 0.4;
 
                     foreach (var p in pattern)
                     {
-                        pvf.RootedVectors.Add((new Coordinate(p[0], 0), new CoordinateVector(p[2] * dx, p[3] * dx)));
+                        if (p[2] >= 0.0)
+                        {
+                            pvfp.RootedVectors.Add((new Coordinate(p[0], 0), new CoordinateVector(p[2] * dx, p[3] * dx)));
+                        }
+                        else
+                        {
+                            pvfn.RootedVectors.Add((new Coordinate(p[0], 0), new CoordinateVector(p[2] * dx, p[3] * dx)));
+                        }
                     }
                 }
 

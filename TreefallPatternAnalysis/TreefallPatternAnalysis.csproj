@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
@@ -31,8 +31,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MicrosoftOfficeCore" Version="15.0.0" />
-    <PackageReference Include="ScottPlot" Version="4.1.63" />
-    <PackageReference Include="ScottPlot.WPF" Version="4.1.63" />
+    <PackageReference Include="ScottPlot" Version="4.1.74" />
+    <PackageReference Include="ScottPlot.WPF" Version="4.1.74" />
     <PackageReference Include="Syncfusion.DataGridExcelExport.Wpf" Version="22.1.39" />
     <PackageReference Include="TogglSwitch" Version="1.0.1" />
   </ItemGroup>
@@ -116,10 +116,34 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Update="cppBin\BakerSterlingPreComp.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="cppBin\BurgersRottAxiPreComp.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="cppBin\BurgersRottPreCompWidthEnds.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="cppBin\BurgersRottRRPreComp.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="cppBin\PatternSolver.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="cppBin\SullivanAxiPreComp.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="cppBin\SullivanRRPreComp.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="cppBin\" />
   </ItemGroup>
   <Import Project="C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets" Condition="Exists('C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets') AND !Exists('Esri.ArcGISPro.Extensions.targets')" />
 </Project>

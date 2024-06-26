@@ -4,6 +4,7 @@ using ScottPlot.Drawing.Colormaps;
 using ScottPlot.Statistics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.DirectoryServices;
 using System.Linq;
 using System.Reflection;
@@ -17,12 +18,28 @@ namespace TreefallPatternAnalysis
     {
         //private static const string pathSource = System.IO.Path.GetDirectoryName(new System.Uri(Assembly.GetEntryAssembly().Location).AbsolutePath).Replace("%20", " ") + "\\TreefallAnalysis";
 
-        [DllImport("TreefallAnalysis\\bin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("cppBin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
         private static unsafe extern double** matchPattern(double* p, double[] modelParams, int modelType, int compareType, int weightType, double dx, double wAbove, double wBelow);
-        [DllImport("TreefallAnalysis\\bin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("cppBin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
         private static unsafe extern double** generatePattern(double[] modelParams, int modelType, double dx);
-        [DllImport("TreefallAnalysis\\bin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("cppBin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
         private static unsafe extern double*** generateField(double[] fieldParams, double[] modelParams, int modelType);
+        [DllImport("cppBin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static unsafe extern double* generateCurve(int n, double[] modelParams, int modelType);
+
+        [DllImport("cppBin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static unsafe extern double** generatePatternLP(double[] modelParams, double[] lineData, int lineDataSize, double dx);
+        [DllImport("cppBin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static unsafe extern double*** generateFieldLP(double[] fieldParams, double[] modelParams, double[] lineData, int lineDataSize);
+        [DllImport("cppBin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static unsafe extern double* generateCurveLP(int n, double[] modelParams, double[] lineData, int lineDataSize);
+
+        [DllImport("cppBin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static unsafe extern double* freeMemory(double* p);
+        [DllImport("cppBin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static unsafe extern double* freeMemory2(double** p, int n);
+        [DllImport("cppBin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static unsafe extern double* freeMemory3(double*** p, int n, int m);
 
         public record Field(double[,] m, Vector2[,] v, double[] x, double[] y)
         {
@@ -61,6 +78,42 @@ namespace TreefallPatternAnalysis
                     }
                 }
 
+                freeMemory3(field_ptr, (int)Math.Floor(wy / dx) + 1, (int)Math.Floor(wx / dx) + 1);
+            }
+
+            return new Field(magnitudes, unitVecs, xPositions, yPositions);
+        }
+
+        public static unsafe Field getFieldLP(double[] fieldParams, double[] modelParams, double[] lineData, int lineDataSize)
+        {
+            double wx = fieldParams[2] - fieldParams[0];
+            double wy = fieldParams[3] - fieldParams[1];
+            double dx = fieldParams[4];
+
+            double[,] magnitudes = new double[(int)Math.Floor(wy / dx) + 1, (int)Math.Floor(wx / dx) + 1];
+            Vector2[,] unitVecs = new Vector2[(int)Math.Floor(wx / dx) + 1, (int)Math.Floor(wy / dx) + 1];
+            double[] xPositions = new double[(int)Math.Floor(wx / dx) + 1];
+            double[] yPositions = new double[(int)Math.Floor(wy / dx) + 1];
+
+            unsafe
+            {
+                double*** field_ptr = generateFieldLP(fieldParams, modelParams, lineData, lineDataSize);
+
+                for (int i = 0; i < (int)Math.Floor(wy / dx) + 1; i++)
+                {
+                    yPositions[i] = field_ptr[i][0][1];
+                    for (int j = 0; j < (int)Math.Floor(wx / dx) + 1; j++)
+                    {
+                        magnitudes[i, j] = field_ptr[i][j][4];
+                        unitVecs[j, i] = new Vector2(field_ptr[i][j][2], field_ptr[i][j][3]);
+
+                        if (i != 0) continue;
+
+                        xPositions[j] = field_ptr[0][j][0];
+                    }
+                }
+
+                freeMemory3(field_ptr, (int)Math.Floor(wy / dx) + 1, (int)Math.Floor(wx / dx) + 1);
             }
 
             return new Field(magnitudes, unitVecs, xPositions, yPositions);
@@ -80,6 +133,7 @@ namespace TreefallPatternAnalysis
 
                     matches = parseNanTerminatedDoubleArray(matches_ptr, 8);
 
+                    //freeMemory2(matches_ptr, matches.Count + 1);
                 }
             }
 
@@ -110,9 +164,45 @@ namespace TreefallPatternAnalysis
                     }
                 }
                  
+                freeMemory2(pattern_ptr, pattern.Count + 2);
             }
 
             return pattern;
+        }
+
+        public static unsafe (List<double[]>, double) getPatternLP(double[] modelParams, double[] lineData, int lineDataSize, double dx, bool rotate = true)
+        {
+            List<double[]> pattern;
+            double w;
+
+            unsafe
+            {
+                double** pattern_ptr = generatePatternLP(modelParams, lineData, lineDataSize, dx);
+
+                pattern = parseNanTerminatedDoubleArray(pattern_ptr, 4);
+
+                if (pattern.Count == 0) return (new List<double[]>(), 0.0);
+
+                //get axis of convergence
+                double c = pattern[pattern.Count - 1][0];
+
+                w = pattern[pattern.Count - 1][2] - pattern[pattern.Count - 1][1];
+                pattern.RemoveAt(pattern.Count - 1);
+
+                if (rotate)
+                {
+                    pattern = reverseAndRotateCW(pattern);
+
+                    for (int i = 0; i < pattern.Count(); i++)
+                    {
+                        pattern[i][1] += c;
+                    }
+                }
+
+                freeMemory2(pattern_ptr, pattern.Count + 2);
+            }
+
+            return (pattern, w);
         }
 
         public static unsafe List<double[]> getPattern(double[] modelParams, int modelType, double dx, double[] centerVec)
@@ -135,6 +225,62 @@ namespace TreefallPatternAnalysis
 
             return pattern;
         }
+
+
+        public static unsafe (double[], double[]) getCurve(int n, double[] modelParams, int modelType)
+        {
+            List<double> xs = [];
+            List<double> ys = [];
+
+            unsafe
+            {
+                double* curve_ptr = generateCurve(n, modelParams, modelType);
+
+                int i = 0;
+
+                while (!IsNaN(curve_ptr[i]))
+                {
+                    xs.Add(curve_ptr[i]);
+                    ys.Add(curve_ptr[i + 1]);
+                    i += 2;
+                }
+
+                freeMemory(curve_ptr);
+            }
+
+            return (xs.ToArray(), ys.ToArray());
+        }
+
+        public static unsafe (double[], double[]) getCurveLP(int n, double[] modelParams, double[] lineData, int lineDataSize)
+        {
+            List<double> xs = [];
+            List<double> ys = [];
+
+            unsafe
+            {
+                double* curve_ptr = generateCurveLP(n, modelParams, lineData, lineDataSize);
+
+                int i = 0;
+
+                while (!IsNaN(curve_ptr[i]))
+                {
+                    xs.Add(curve_ptr[i]);
+                    ys.Add(curve_ptr[i + 1]);
+                    i += 2;
+                }
+
+                freeMemory(curve_ptr);
+            }
+
+            if (xs.Count == 0)
+            {
+                xs.Add(0.0);
+                ys.Add(0.0);
+            }
+
+            return (xs.ToArray(), ys.ToArray());
+        }
+
 
         /*public static unsafe double getConvergence(double[] p)
         {

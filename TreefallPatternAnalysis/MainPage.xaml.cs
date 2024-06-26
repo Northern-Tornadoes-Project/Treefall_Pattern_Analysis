@@ -467,9 +467,10 @@ namespace TreefallPatternAnalysis
                     t.renderTransect(transectsOverviewPlot.Plot);
 
                     transects.Add(t);
-
                     transectsOverviewPlot.Refresh();
                 }
+                transectCreationList.SelectedIndex = transectCreationList.Items.Count - 1;
+                transectSelected(null, null);
             }
             catch (Exception ex)
             {
@@ -509,15 +510,18 @@ namespace TreefallPatternAnalysis
                 MessageBox.Show("An unkown error has occurred\n\nFunction: fineAdjustment\n\nError:\n\n" + ex.Message);
             }
         }
-        
 
-        private void autoGenTransects(object sender, RoutedEventArgs e)
+
+        private async void autoGenTransects(object sender, RoutedEventArgs e)
         {
+            autoGenTransectsButton.IsEnabled = false;
+
             try
             {
                 if (convergenceLineX.IsNullOrEmpty()) return;
 
                 double spacing = double.Parse(autoGenSpacing.Text, CultureInfo.InvariantCulture);
+
 
                 for (double i = spacing; i < convergenceLineDists[convergenceLineDists.Length - 1]; i += spacing)
                 {
@@ -549,6 +553,8 @@ namespace TreefallPatternAnalysis
                             break;
                         }
                     }
+                    transectCreationList.SelectedIndex = transectCreationList.Items.Count - 1;
+                    transectSelected(null, null);
 
                 }
 
@@ -558,6 +564,9 @@ namespace TreefallPatternAnalysis
             {
                 MessageBox.Show("An unkown error has occurred\n\nFunction: autoGenTransects\n\nError:\n\n" + ex.Message);
             }
+
+            await Task.Delay(500);
+            autoGenTransectsButton.IsEnabled = true;
         }
 
         private void removeTransect(object sender, RoutedEventArgs e)
@@ -591,7 +600,7 @@ namespace TreefallPatternAnalysis
         {
             try
             {
-                //if (lockSliders) return;
+                if (lockSliders) return;
                 //lockSliders = true;
 
                 Slider slider = null;
@@ -910,6 +919,8 @@ namespace TreefallPatternAnalysis
 
                 transectPositionSlider.Value = transects[idx].positionOffset;
 
+                SliderValueChanged(null, null);
+
                 for (int i = 0; i < transects.Count; i++)
                 {
                     if (i == idx)
@@ -938,15 +949,21 @@ namespace TreefallPatternAnalysis
             return (x1, y1);
         }
 
+        bool matchLock = false;
 
         private async void runPatternMatching(object sender, RoutedEventArgs e)
         {
+            if(matchLock) return;
+
+            matchLock = true;
+
             try
             {
                 double[] modelParams = getModelParameters();
 
                 if (modelParams.IsNullOrEmpty())
                 {
+                    matchLock = false;
                     return;
                 }
 
@@ -1008,6 +1025,12 @@ namespace TreefallPatternAnalysis
                         failedToMatch = true;
                     }
 
+                    if (!loadingBarWindow.IsLoaded)
+                    {
+                        matchLock = false;
+                        return;
+                    }
+
                     pb.Value++;
                 }
 
@@ -1035,6 +1058,8 @@ namespace TreefallPatternAnalysis
             {
                 MessageBox.Show("An unkown error has occurred\n\nFunction: runPatternMatching\n\nError:\n\n" + ex.Message);
             }
+
+            matchLock = false;
         }
 
 
@@ -1357,12 +1382,16 @@ namespace TreefallPatternAnalysis
 
         private async void runAllPatternMatching(object sender, RoutedEventArgs e)
         {
+            if (matchLock) return;
+            matchLock = true;
+
             try
             {
                 double[] modelParams = getModelParameters();
 
                 if (modelParams.IsNullOrEmpty())
                 {
+                    matchLock = false;
                     return;
                 }
 
@@ -1439,7 +1468,7 @@ namespace TreefallPatternAnalysis
 
                 for (int i = 0; i < transects.Count; i++)
                 {
-
+                    double swirlSum = 0.0;
                     double minVelSum = 0.0;
                     double bestErrorSum = 0.0;
                     List<MatchingResult> results = new List<MatchingResult>();
@@ -1455,26 +1484,34 @@ namespace TreefallPatternAnalysis
                                                                          Math.Ceiling(transects[i].lengthBelow / spacing) * spacing);
                         });
 
+                        if (!loadingBarWindow.IsLoaded)
+                        {
+                            matchLock = false;
+                            return;
+                        }
+
                         if (matches.Count > 0)
                         {
                             transects[i].results.Add((((ListBoxItem)modelTypeListView.Items[j]).Content.ToString(), matches));
+                            double avgSwirl = Math.Round(matches.Average(x => x[1]/x[2]), 2);
                             double[] minMatch = matches.MinBy(x => x[7]);
                             double bestError = Math.Round(matches[0][0], 5);
 
                             double minVel = Math.Round(minMatch[7]);
                             double error = (1 - bestError);
                             error *= error;
+                            swirlSum += avgSwirl * error;
                             minVelSum += minMatch[7] * error;
                             bestErrorSum += error;
 
                             string bestParams = string.Format("{0}, {1}, {2}, {3}, {4}, {5}", matches[0][2], matches[0][1], matches[0][3], matches[0][4], matches[0][5], Math.Round(matches[0][6], 2));
                             string minParams = string.Format("{0}, {1}, {2}, {3}, {4}, {5}", minMatch[2], minMatch[1], minMatch[3], minMatch[4], minMatch[5], Math.Round(minMatch[6], 2));
 
-                            results.Add(new MatchingResult(((ListBoxItem)modelTypeListView.Items[j]).Content.ToString(), minVel + " m/s", bestError, bestParams, minParams));
+                            results.Add(new MatchingResult(((ListBoxItem)modelTypeListView.Items[j]).Content.ToString(), avgSwirl.ToString(), minVel + " m/s", bestError, bestParams, minParams));
                         }
                         else
                         {
-                            results.Add(new MatchingResult(((ListBoxItem)modelTypeListView.Items[j]).Content.ToString(), "N/A", 0, "x", "x"));
+                            results.Add(new MatchingResult(((ListBoxItem)modelTypeListView.Items[j]).Content.ToString(), "N/A", "N/A", 0, "x", "x"));
                             failedToMatch = true;
                         }
 
@@ -1487,20 +1524,13 @@ namespace TreefallPatternAnalysis
                         pbm.Value++;
                     }
 
-                    if (failedToMatch)
-                    {
-                        MessageBox.Show("FAILED TO MATCH PATTERN\n\n" +
-                                    "Failed to find adequete matches for some transects consider\n" +
-                                    "increasing the match tolerance or fitting better patterns");
-                    }
-
                     Label label = new Label();
                     label.Content = "Transect #" + (i + 1);
                     label.Padding = new Thickness(0, 10, 0, 10);
                     label.FontWeight = FontWeights.Bold;
                     fullResultPanel.Children.Add(label);
 
-                    results.Add(new MatchingResult("Weighted Average", Math.Round(minVelSum / bestErrorSum) + " m/s", Double.NaN, "x", "x"));
+                    results.Add(new MatchingResult("Weighted Average", Math.Round(swirlSum / bestErrorSum, 2).ToString(), Math.Round(minVelSum / bestErrorSum) + " m/s", Double.NaN, "x", "x"));
 
                     DataGrid dg = new DataGrid();
                     dg.ItemsSource = new List<MatchingResult>(results);
@@ -1514,6 +1544,13 @@ namespace TreefallPatternAnalysis
                     pb.Value++;
                 }
 
+                if (failedToMatch)
+                {
+                    MessageBox.Show("FAILED TO MATCH PATTERN\n\n" +
+                                "Failed to find adequete matches for some transects consider\n" +
+                                "increasing the match tolerance or fitting better patterns");
+                }
+
                 loadingBarWindow.Close();
 
                 headerTabs.SelectedIndex = 4;
@@ -1522,6 +1559,7 @@ namespace TreefallPatternAnalysis
             {
                 MessageBox.Show("An unkown error has occurred\n\nFunction: runAllPatternMatching\n\nError:\n\n" + ex.Message);
             }
+            matchLock = false;
         }
 
         private void matchSelected(object sender, MouseButtonEventArgs e)
