@@ -30,7 +30,10 @@ namespace TreefallPatternAnalysis
             InitializeComponent();
 
             customModelParameters.UpdateData += UpdateGraph;
-            lpGraph.UpdateData += UpdateGraph;
+            vrLpGraph.UpdateData += UpdateGraph;
+            vtLpGraph.UpdateData += UpdateGraph;
+            vtLpGraph.color = System.Drawing.Color.Green;
+            vtLpGraph.UpdateSpline();
 
             UpdateGraph(null, null);
         }
@@ -41,13 +44,15 @@ namespace TreefallPatternAnalysis
         {
             if (debounce) return;
 
-            lpGraph.lastKey = e.Key.ToString().ToLower()[0];
+            vrLpGraph.lastKey = e.Key.ToString().ToLower()[0];
+            vtLpGraph.lastKey = e.Key.ToString().ToLower()[0];
             debounce = true;
         }
 
         private void KeyReleased(object sender, KeyEventArgs e)
         {
-            lpGraph.lastKey = '\0';
+            vrLpGraph.lastKey = '\0';
+            vtLpGraph.lastKey = '\0';
             debounce = false;
         }
 
@@ -66,13 +71,14 @@ namespace TreefallPatternAnalysis
         private void renderFieldGraph()
         {
             var modelParams = customModelParameters.GetParams();
-            var lines = lpGraph.GetLines();
+            var vrLines = vrLpGraph.GetLines();
+            var vtLines = vtLpGraph.GetLines();
             //lines[2] = 1e-4;
 
             double dx = modelParams.dx;
 
             PatternSolver.Field field = PatternSolver.getFieldLP([-1000.0, -1000.0, 1000.0, 1000.0, dx],
-                                                               [modelParams.vr, modelParams.vt, modelParams.vs, modelParams.rmax, 1.0], lines, lines.Length / 3);
+                                                               [modelParams.vr, modelParams.vt, modelParams.vs, modelParams.rmax, 1.0], vrLines, vtLines);
 
             Plot plt = graphPlot.Plot;
 
@@ -96,7 +102,7 @@ namespace TreefallPatternAnalysis
 
             if (modelParams.displayCurve)
             {
-                var (xs, ys) = PatternSolver.getCurveLP(500, [modelParams.vr, modelParams.vt, modelParams.vs, modelParams.vc, modelParams.rmax, 1.0], lines, lines.Length / 3);
+                var (xs, ys) = PatternSolver.getCurveLP(500, [modelParams.vr, modelParams.vt, modelParams.vs, modelParams.vc, modelParams.rmax, 1.0], vrLines, vtLines);
 
                 plt.AddScatter(xs, ys, System.Drawing.Color.White, 4, 1);
             }
@@ -108,7 +114,7 @@ namespace TreefallPatternAnalysis
                 vf.ScaledArrowheadLength = 0.4;
             }
 
-            var (pattern, w) = PatternSolver.getPatternLP([modelParams.vr, modelParams.vt, modelParams.vs, modelParams.vc, modelParams.rmax, 1.0], lines, lines.Length / 3, -16, true);
+            var (pattern, w) = PatternSolver.getPatternLP([modelParams.vr, modelParams.vt, modelParams.vs, modelParams.vc, modelParams.rmax, 1.0], vrLines, vtLines, -16, true);
 
             patternPlot.Update(pattern, w / 16.0);
         }

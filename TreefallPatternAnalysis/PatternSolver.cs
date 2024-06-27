@@ -28,11 +28,11 @@ namespace TreefallPatternAnalysis
         private static unsafe extern double* generateCurve(int n, double[] modelParams, int modelType);
 
         [DllImport("cppBin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static unsafe extern double** generatePatternLP(double[] modelParams, double[] lineData, int lineDataSize, double dx);
+        private static unsafe extern double** generatePatternLP(double[] modelParams, double[] vrLineData, double[] vtLineData, double dx);
         [DllImport("cppBin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static unsafe extern double*** generateFieldLP(double[] fieldParams, double[] modelParams, double[] lineData, int lineDataSize);
+        private static unsafe extern double*** generateFieldLP(double[] fieldParams, double[] modelParams, double[] vrLineData, double[] vtLineData);
         [DllImport("cppBin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static unsafe extern double* generateCurveLP(int n, double[] modelParams, double[] lineData, int lineDataSize);
+        private static unsafe extern double* generateCurveLP(int n, double[] modelParams, double[] vrLineData, double[] vtLineData);
 
         [DllImport("cppBin\\PatternSolver.dll", CallingConvention = CallingConvention.Cdecl)]
         private static unsafe extern double* freeMemory(double* p);
@@ -84,7 +84,7 @@ namespace TreefallPatternAnalysis
             return new Field(magnitudes, unitVecs, xPositions, yPositions);
         }
 
-        public static unsafe Field getFieldLP(double[] fieldParams, double[] modelParams, double[] lineData, int lineDataSize)
+        public static unsafe Field getFieldLP(double[] fieldParams, double[] modelParams, double[] vrLineData, double[] vtLineData)
         {
             double wx = fieldParams[2] - fieldParams[0];
             double wy = fieldParams[3] - fieldParams[1];
@@ -95,9 +95,12 @@ namespace TreefallPatternAnalysis
             double[] xPositions = new double[(int)Math.Floor(wx / dx) + 1];
             double[] yPositions = new double[(int)Math.Floor(wy / dx) + 1];
 
+            vrLineData = vrLineData.Append(double.NaN).ToArray();
+            vtLineData = vtLineData.Append(double.NaN).ToArray();
+
             unsafe
             {
-                double*** field_ptr = generateFieldLP(fieldParams, modelParams, lineData, lineDataSize);
+                double*** field_ptr = generateFieldLP(fieldParams, modelParams, vrLineData, vtLineData);
 
                 for (int i = 0; i < (int)Math.Floor(wy / dx) + 1; i++)
                 {
@@ -170,14 +173,17 @@ namespace TreefallPatternAnalysis
             return pattern;
         }
 
-        public static unsafe (List<double[]>, double) getPatternLP(double[] modelParams, double[] lineData, int lineDataSize, double dx, bool rotate = true)
+        public static unsafe (List<double[]>, double) getPatternLP(double[] modelParams, double[] vrLineData, double[] vtLineData, double dx, bool rotate = true)
         {
             List<double[]> pattern;
             double w;
 
+            vrLineData = vrLineData.Append(double.NaN).ToArray();
+            vtLineData = vtLineData.Append(double.NaN).ToArray();
+
             unsafe
             {
-                double** pattern_ptr = generatePatternLP(modelParams, lineData, lineDataSize, dx);
+                double** pattern_ptr = generatePatternLP(modelParams, vrLineData, vtLineData, dx);
 
                 pattern = parseNanTerminatedDoubleArray(pattern_ptr, 4);
 
@@ -251,14 +257,17 @@ namespace TreefallPatternAnalysis
             return (xs.ToArray(), ys.ToArray());
         }
 
-        public static unsafe (double[], double[]) getCurveLP(int n, double[] modelParams, double[] lineData, int lineDataSize)
+        public static unsafe (double[], double[]) getCurveLP(int n, double[] modelParams, double[] vrLineData, double[] vtLineData)
         {
             List<double> xs = [];
             List<double> ys = [];
 
+            vrLineData = vrLineData.Append(double.NaN).ToArray();
+            vtLineData = vtLineData.Append(double.NaN).ToArray();
+
             unsafe
             {
-                double* curve_ptr = generateCurveLP(n, modelParams, lineData, lineDataSize);
+                double* curve_ptr = generateCurveLP(n, modelParams, vrLineData, vtLineData);
 
                 int i = 0;
 

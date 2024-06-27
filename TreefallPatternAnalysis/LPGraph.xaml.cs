@@ -33,6 +33,7 @@ namespace TreefallPatternAnalysis
             remove { RemoveHandler(UpdateDataEvent, value); }
         }
 
+        public System.Drawing.Color color = System.Drawing.Color.Red;
         private double[] x;
         private double[] y;
         private ScottPlot.Plottable.ScatterPlotDraggable spd;
@@ -43,6 +44,8 @@ namespace TreefallPatternAnalysis
         {
             InitializeComponent();
 
+            plot.Plot.Layout(left: 0, right: 0, bottom: 0, top: 0, padding: 0);
+
             //x = [0.0, 0.2, 0.55, 1.0, 2.0, 4.0, 10.0];
             //y = [0.0, 0.5, 0.89, 1.0, 0.7, 0.43, 0.0];
 
@@ -51,7 +54,7 @@ namespace TreefallPatternAnalysis
 
             rmaxIdx = x.IndexOf(1.0);
 
-            updateSpline();
+            UpdateSpline();
             plot.Refresh();
         }
 
@@ -73,7 +76,7 @@ namespace TreefallPatternAnalysis
             return lineData.ToArray();
         }
 
-        private void updateSpline()
+        public void UpdateSpline()
         {
             var plt = plot.Plot;
 
@@ -88,7 +91,7 @@ namespace TreefallPatternAnalysis
                 DragYLimitMax = 1,
                 MarkerSize = 10,
                 MarkerShape = MarkerShape.openSquare,
-                MarkerColor = System.Drawing.Color.Red,
+                MarkerColor = color,
                 LineWidth = 2,
             };
 
@@ -119,7 +122,7 @@ namespace TreefallPatternAnalysis
 
             if (lastKey == 'n')
             {
-                addNode(selectedIdx);
+                AddNode(selectedIdx);
             }
             
             if (selectedIdx == x.Length - 1)
@@ -139,7 +142,7 @@ namespace TreefallPatternAnalysis
 
             if (lastKey == 'd')
             {
-                deleteNode(selectedIdx);
+                DeleteNode(selectedIdx);
                 return;
             }
 
@@ -162,7 +165,7 @@ namespace TreefallPatternAnalysis
             RaiseEvent(new RoutedEventArgs(UpdateDataEvent));
         }
 
-        private void deleteNode(int idx)
+        private void DeleteNode(int idx)
         {
             lastKey = '\0';
 
@@ -172,11 +175,11 @@ namespace TreefallPatternAnalysis
             x = x.RemoveAt(idx);
             y = y.RemoveAt(idx);
 
-            updateSpline();
+            UpdateSpline();
             RaiseEvent(new RoutedEventArgs(UpdateDataEvent));
         }
 
-        private void addNode(int idx)
+        private void AddNode(int idx)
         {
             lastKey = '\0';
             selectedIdx++;
@@ -189,7 +192,7 @@ namespace TreefallPatternAnalysis
             x = x.InsertAt(idx, mx);
             y = y.InsertAt(idx, my);
 
-            updateSpline();
+            UpdateSpline();
             RaiseEvent(new RoutedEventArgs(UpdateDataEvent));
         }
 

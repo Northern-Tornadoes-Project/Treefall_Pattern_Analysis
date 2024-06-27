@@ -13,13 +13,20 @@
     <Grid >
 
         <WpfPlot x:Name="graphPlot" HorizontalAlignment="Left" Margin="302,0,0,0" VerticalAlignment="Top" Height="418" Width="678"/>
-        <local:LPGraph x:Name="lpGraph" HorizontalAlignment="Left" Margin="0,420,0,0" VerticalAlignment="Top" Height="283" Width="1280"/>
+        <local:LPGraph x:Name="vrLpGraph" HorizontalAlignment="Left" Margin="0,435,0,0" VerticalAlignment="Top" Height="283" Width="640"/>
+        <local:LPGraph x:Name="vtLpGraph" HorizontalAlignment="Left" Margin="639,435,0,0" VerticalAlignment="Top" Height="283" Width="640"/>
         <local:CustomModelParameters x:Name="customModelParameters" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Height="420" Width="300"/>
+        <Rectangle HorizontalAlignment="Left" Height="17" Margin="0,420,0,0" Fill="White" VerticalAlignment="Top" Width="640"/>
+        <Rectangle HorizontalAlignment="Left" Height="17" Margin="641,420,0,0" Fill="White" VerticalAlignment="Top" Width="640"/>
+        <Rectangle HorizontalAlignment="Left" Height="419" Margin="980,0,0,0" Fill="#F7F8F8" VerticalAlignment="Top" Width="301"/>
+        <Rectangle HorizontalAlignment="Left" Height="285" Margin="638,419,0,0" Stroke="Black" VerticalAlignment="Top" Width="2"/>
         <Rectangle HorizontalAlignment="Left" Height="420" Margin="300,0,0,0" Stroke="Black" VerticalAlignment="Top" Width="2"/>
         <Rectangle HorizontalAlignment="Center" Height="2" Margin="0,418,0,0" Stroke="Black" VerticalAlignment="Top" Width="1280"/>
         <Rectangle HorizontalAlignment="Center" Height="2" Margin="0,-2,0,0" Stroke="Black" VerticalAlignment="Top" Width="1280"/>
         <Rectangle HorizontalAlignment="Left" Height="420" Margin="978,-2,0,0" Stroke="Black" VerticalAlignment="Top" Width="2"/>
         <local:PatternPlot x:Name="patternPlot" HorizontalAlignment="Left" Margin="1057,9,0,0" VerticalAlignment="Top"/>
+        <Label Content="Vr Profile" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Margin="265,418,0,0" VerticalAlignment="Top"/>
+        <Label Content="Vt Profile" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Margin="910,418,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </controls:ProWindow>

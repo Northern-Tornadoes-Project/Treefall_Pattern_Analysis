@@ -6,10 +6,10 @@
              xmlns:local="clr-namespace:TreefallPatternAnalysis"
              mc:Ignorable="d" 
              Focusable="True"
-             d:DesignHeight="280" d:DesignWidth="1250">
+             d:DesignHeight="280" d:DesignWidth="640">
     <Grid>
-        <Rectangle HorizontalAlignment="Center" Height="280" Fill="#F7F8F8" VerticalAlignment="Center" Width="625"/>
-        <WpfPlot HorizontalAlignment="Center" VerticalAlignment="Center" Height="283" Width="1280" x:Name="plot" Focusable="True" PlottableDragged="NodeMoved" PlottableDropped="NodeDropped"/>
+        <Rectangle HorizontalAlignment="Center" Height="280" Fill="#F7F8F8" VerticalAlignment="Center" Width="640"/>
+        <WpfPlot HorizontalAlignment="Center" VerticalAlignment="Center" Height="280" Width="655" x:Name="plot" Focusable="True" PlottableDragged="NodeMoved" PlottableDropped="NodeDropped" />
 
 
     </Grid>
